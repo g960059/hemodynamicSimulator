@@ -1,0 +1,12 @@
+{
+    "plugins": ["emotion","transform-node-env-inline"],
+    "presets": [
+        [
+            "@emotion/babel-preset-css-prop",
+            {
+            "autoLabel": true,
+            "labelFormat": "[local]"
+            }
+        ]
+    ]
+}
