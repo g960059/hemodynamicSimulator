@@ -22,7 +22,7 @@ export default {
   LV_V0 : 5,
   LV_alpha : 0.029,
   LV_beta : 0.34,
-  LV_Tmax : 300,
+  LV_Tmax : 250,
   LV_tau : 25,
   LV_AV_delay : 160,
 

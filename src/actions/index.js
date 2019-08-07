@@ -6,3 +6,6 @@ export const CALC_SERIES = 'CALC_SERIES'
 export const UPDATE_PROPS = 'UPDATE_PROPS'
 export const LOAD_PROPS = 'LOAD_PROPS'
 export const RESET_PROPS = 'RESET_PROPS'
+
+export const PUSH_PROP_MUTATION = 'PUSH_PROP_MUTATION' 
+export const ShIFT_PROP_MUTATION = 'ShIFT_PROP_MUTATION' 

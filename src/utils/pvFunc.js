@@ -1,4 +1,4 @@
-const e = (t, Tmax, tau, HR)=>{
+export const e = (t, Tmax, tau, HR)=>{
   const t_ = t % (60000/HR)
   if(t_ < 3*Tmax/2){
     return (Math.sin(Math.PI * t_/Tmax- Math.PI/2)+1)/2

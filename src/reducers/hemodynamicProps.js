@@ -4,7 +4,9 @@ import {UPDATE_PROPS,LOAD_PROPS,RESET_PROPS} from '../actions'
 export default (state={}, action) =>{
   switch(action.type){
     case UPDATE_PROPS:
-      return {...state, ...action.newHemodynamicProps} 
+      console.log('UPDATE_PROPS: ', action.propsUpdated)
+      console.log('New State: ', {...state, ...action.propsUpdated})
+      return {...state, ...action.propsUpdated} 
     case RESET_PROPS:
       return {}
     case LOAD_PROPS:

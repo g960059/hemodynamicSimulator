@@ -20,6 +20,7 @@ export default (props) => {
       {
         xaxis:{
           type:'numeric',
+          min: 0,
           tickAmount:4
         }, 
         yaxis:{

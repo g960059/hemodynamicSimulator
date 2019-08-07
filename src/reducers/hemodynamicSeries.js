@@ -12,6 +12,7 @@ export default (state=[], action) =>{
   // console.log(action.type)
   switch(action.type){
     case UPDATE_SERIES:
+      // console.log("[UPDATE_SERIES] data: ", action.data, 'time: ', action.time)
       return {data: action.data, time: action.time }
     // case CALC_SERIES:
     //   let ind = state.futures.length-1
