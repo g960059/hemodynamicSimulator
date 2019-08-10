@@ -1,8 +1,8 @@
-import React, {useState,useEffect,useReducer, useRef,useLayoutEffect} from 'react';
+import React, {useState,useEffect,useReducer, useRef,useLayoutEffect, useCallback} from 'react';
 import { makeStyles,createMuiTheme } from '@material-ui/core/styles';
 import rk  from './src/utils/RungeKutta/Rk4'
 import pv_func, {e} from './src/utils/pvFunc'
-import {Paper,Grid,Switch} from '@material-ui/core'
+import {Paper,Grid,Switch, Box} from '@material-ui/core'
 import Layout from './src/components/Layout'
 import DefaultPrperty from './src/settings/DefaultProperty'
 import { ThemeProvider } from '@material-ui/styles';
@@ -15,6 +15,7 @@ import PVBuilder from './src/components/PVBuilder'
 import PropsController from './src/components/PropsController'
 
 import mutationTimings from './src/settings/mutationTimings'
+
 
 const theme = createMuiTheme({
   mixins: {
@@ -29,15 +30,26 @@ const theme = createMuiTheme({
     }
   },
 });
+theme.shadows[1] = '0px 1px 5px 1px rgba(0,0,0,0.1)'
 
 const useStyles= makeStyles(theme =>({
   paper: {
     padding: theme.spacing(2),
   },
-  controllBar: {
-    height: `calc(95vh - ${theme.mixins.toolbar.minHeight}px)`,
+  sideContainer: {
+    height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`,
     overflowY: 'scroll',
-    border: 'solid 1px gray'
+    backgroundColor: theme.palette.background.paper
+  },
+  mainContainer: {
+    height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`,
+    overflowY: 'scroll',
+    paddingLeft: `${theme.spacing(1)}px`
+  },
+  halfBox: {
+    width: `calc(100vw * 9/ 12 / 2 - ${theme.spacing(1)}px * 3)`,
+    height: `calc((100vw * 9/ 12 / 2 - ${theme.spacing(1)}px * 3) *3 / 4 )`,
+    backgroundColor: theme.palette.background.paper,
   }
 }))
 
@@ -53,7 +65,8 @@ const App =() =>{
     hemodynamicProps: DefaultPrperty,
     hemodynamicPropsMutations: []
   }
-  const [state, dispatch] = useReducer(reducer, initialState)
+  const [state, dispatch_] = useReducer(reducer, initialState)
+  const dispatch = useCallback(dispatch_, [])
 
   const [speed, setSpeed] = useState(0.2);
   
@@ -180,35 +193,58 @@ const App =() =>{
     <ThemeProvider theme={theme}>
       <AppContext.Provider value={{state,dispatch}}>
         <Layout title='PV loops' >
-            <Grid container spacing={1}>
-              <Grid item xs={12}>
-                <Paper>
-                  <p>{[...rafIdRef.current].reduce((a,b)=>a+' '+b,'')}</p>
-                  <p>{ activeCallbacks.current.size }</p>
-                  
-                <Switch
-                    checked={speed!=0}
-                    onChange={()=>{
-                      if(speed!=0){
-                        Array.from(rafIdRef.current).map(id=>cancelAnimationFrame(id))
-                        activeCallbacks.current.clear()
-                        setSpeed(0)
-                      }else{
-                        setSpeed(0.2)
-                      }
-                    }}
-                  />
-                  <p>{activeCallbacks.current.length}</p>
-                </Paper>
-              </Grid>
+            <Grid container>
               <Grid item xs={3}>
-                <PropsController/>
+                <Box className={classes.sideContainer} px={2}>
+                  <PropsController/>
+                  <p>Nostrud et proident consequat cupidatat in anim dolore sunt magna deserunt id esse aute elit. Officia reprehenderit culpa reprehenderit est commodo velit aute aute irure. Velit cupidatat sunt sint sit ullamco proident reprehenderit consequat esse adipisicing mollit irure. Sit cupidatat velit velit reprehenderit in sint enim ipsum voluptate amet amet. Velit Lorem duis laborum aliqua eu dolor est.</p>
+                  <p>Nostrud et proident consequat cupidatat in anim dolore sunt magna deserunt id esse aute elit. Officia reprehenderit culpa reprehenderit est commodo velit aute aute irure. Velit cupidatat sunt sint sit ullamco proident reprehenderit consequat esse adipisicing mollit irure. Sit cupidatat velit velit reprehenderit in sint enim ipsum voluptate amet amet. Velit Lorem duis laborum aliqua eu dolor est.</p>
+                  <p>Nostrud et proident consequat cupidatat in anim dolore sunt magna deserunt id esse aute elit. Officia reprehenderit culpa reprehenderit est commodo velit aute aute irure. Velit cupidatat sunt sint sit ullamco proident reprehenderit consequat esse adipisicing mollit irure. Sit cupidatat velit velit reprehenderit in sint enim ipsum voluptate amet amet. Velit Lorem duis laborum aliqua eu dolor est.</p>
+                  <p>Nostrud et proident consequat cupidatat in anim dolore sunt magna deserunt id esse aute elit. Officia reprehenderit culpa reprehenderit est commodo velit aute aute irure. Velit cupidatat sunt sint sit ullamco proident reprehenderit consequat esse adipisicing mollit irure. Sit cupidatat velit velit reprehenderit in sint enim ipsum voluptate amet amet. Velit Lorem duis laborum aliqua eu dolor est.</p>
+                </Box>
               </Grid>
-              <Grid item xs={9}>
-                <Paper>
-                  <PVBuilder chamber='LV'/>
-                </Paper>
-              </Grid> 
+              <Grid item container xs={9} className={classes.mainContainer} >
+                <Box px={1}>
+                  <Grid container spacing={1}>
+                    <Grid item xs={12}>
+                      <Switch
+                        checked={speed!=0}
+                        onChange={()=>{
+                          if(speed!=0){
+                            Array.from(rafIdRef.current).map(id=>cancelAnimationFrame(id))
+                            activeCallbacks.current.clear()
+                            setSpeed(0)
+                          }else{
+                            setSpeed(0.2)
+                          }
+                        }}/>
+                  </Grid>
+                    <Grid item xs={6}>
+                      <Box className={classes.halfBox}>
+                        <PVBuilder chamber='LV'/>
+                      </Box>
+                        
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Box className={classes.halfBox}>
+                        <PVBuilder chamber='RV'/>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Box className={classes.halfBox}>
+                        <PVBuilder chamber='LA'/>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Box className={classes.halfBox}>
+                        <PVBuilder chamber='RA'/>
+                      </Box>
+                    </Grid>                                          
+                                        
+                  </Grid>
+                </Box>
+              </Grid>
+
             </Grid>
         </Layout>
       </AppContext.Provider>
@@ -219,6 +255,9 @@ const App =() =>{
 export default App
 
 
+    // <p>{[...rafIdRef.current].reduce((a,b)=>a+' '+b,'')}</p>
+    // <p>{ activeCallbacks.current.size }</p>
+                  
     // let propMutations = [...state.hemodynamicPropsMutations]
     // let propMutation =  propMutations.shift() || null
     // let propMutationKey = propMutation !== null ? Object.keys(propMutation)[0] : null

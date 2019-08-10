@@ -37,6 +37,14 @@ export const zip_series = (x,y) =>{
   return res
 }
 
+export const zip_series_with_label = (x,y) =>{
+  const len =  x.length
+  const res = new Array(len)
+  for(let i=0; i<len; i++){
+    res[i] = {x:x[i],y:y[i]}
+  }
+  return res
+}
 
 const get_series = (times,series,y_index=null,x_index=null) => {
   const x = x_index === null ? times:get_column(series,x_index)

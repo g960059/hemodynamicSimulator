@@ -15,7 +15,9 @@ import Hidden from '@material-ui/core/Hidden'
 
 const drawerWidth = 240
 const useStyles= makeStyles(theme =>({
-  toolbar: theme.mixins.toolbar,
+  toolbar: {
+    height: `calc(${theme.mixins.toolbar.minHeight}px)`
+  },
   drawer:{
     width: drawerWidth,
     flexShrink: 0
@@ -27,12 +29,12 @@ const useStyles= makeStyles(theme =>({
   //   alignItems: 'center',
   //   padding: theme.spacing(0, 3)
   // },
+  elevation: 2,
   drawerPaper: {
     width: drawerWidth
   },
   appBar:{
     // transition: theme.transitions.create()
-    zIndex: theme.zIndex.drawer + 1
   },
   // appBarShift: {
   //   marginLeft: drawerWidth,
@@ -53,25 +55,25 @@ const useStyles= makeStyles(theme =>({
   // }
 }))
 
-export default (props) => {
+export default React.memo((props) => {
   const classes = useStyles();
   const [openDrawer, setOpenDrawer] = useState(false);
   return (
     <Box display='flex'>
       <CssBaseline/>
-      <AppBar position='fixed' className={classes.appBar}>
+      <AppBar position='fixed' color='white' elevation={1}>
         <Toolbar>
           <Typography variant="h6">{props.title}</Typography>
         </Toolbar>
       </AppBar>
-      <Drawer variant='permanent' className={classes.drawer} classes={{paper:classes.drawerPaper}}>
+      {/* <Drawer variant='permanent' className={classes.drawer} classes={{paper:classes.drawerPaper}}>
         <div className={classes.toolbar}/>
         {props.drawer}
-      </Drawer>
-      <Box className={classes.content} >
+      </Drawer> */}
+      <Box className={classes.content} bgcolor="background.default">
         <div className={classes.toolbar}/>
         {props.children}
       </Box>
     </Box>
   )
-}
+})

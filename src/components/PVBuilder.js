@@ -1,8 +1,12 @@
 import React,{useEffect, useContext,useState,useRef} from 'react';
 import AppContext from '../contexts/AppContexts'
-import {P, u_P} from '../utils/pvFunc'
-import {get_column, zip_series, downSampling} from '../utils/utils'
-import SimpleLine from './SimpleLine'
+import {u_P} from '../utils/pvFunc'
+import {get_column,  zip_series_with_label} from '../utils/utils'
+// import SimpleLine from './SimpleLine'
+
+import '../../node_modules/react-vis/dist/style.css';
+import {FlexibleXYPlot, LineSeries,MarkSeries, XAxis,YAxis} from 'react-vis';
+import { Box } from '@material-ui/core';
 
 export default (props) => {
   const {state,_} = useContext(AppContext);
@@ -24,7 +28,7 @@ export default (props) => {
       const p = u_P(v,time,Ees,V0,alpha, beta, Tmax, tau, AV_delay, HR)
       // console.log('p: ',p)
       // console.log('zip_series(v,p): ',zip_series(v,p))
-      return zip_series(v,p)
+      return  zip_series_with_label(v,p)
     } 
   },[state.hemodynamicProps])
 
@@ -41,11 +45,12 @@ export default (props) => {
   },[state.hemodynamicSeries])
 
   return (
-    <>
-    {
-      trajectory.length > 2 ? <SimpleLine data = {[trajectory,{}]}/>: null
-    }
-    </>
+    <FlexibleXYPlot > 
+      <XAxis/>
+      <YAxis/>
+      <LineSeries data={trajectory} />
+      {trajectory.length > 2 ?  <MarkSeries data={[{...trajectory[trajectory.length-1], size: 3},{...trajectory[0], size: 10, opacity:0},{...trajectory[0], size: 0, opacity:0}]}/>: null}
+    </FlexibleXYPlot>
   ) 
 }
 

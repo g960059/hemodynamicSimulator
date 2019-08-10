@@ -1,4 +1,4 @@
-import React,{useContext,useState } from 'react';
+import React,{useContext,useState, useCallback } from 'react';
 import AppContext from '../contexts/AppContexts'
 import {Slider,Typography} from '@material-ui/core';
 import {PUSH_PROP_MUTATION} from '../actions'
@@ -8,17 +8,17 @@ const InputProps  = React.memo((props) => {
   const {state,dispatch} = useContext(AppContext);
   const [inputValue, setInputValue] = useState( state.hemodynamicProps[props.name]);
   const {min,max,step} = InputSetting[props.name]
-  const dispatchChangeComitted = (e,v) =>{
+  const dispatchChangeComitted = useCallback((e,v) =>{
     dispatch(
       {
         type: PUSH_PROP_MUTATION,
         propMutation: {[props.name]:v},
       }
     )
-  }
-  const handleChange = (e,v) =>{
+  })
+  const handleChange = useCallback((e,v) =>{
     setInputValue(v)
-  }
+  })
   return (
     <>
       <Typography id={props.name} gutterBottom>
