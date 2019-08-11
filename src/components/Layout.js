@@ -57,7 +57,7 @@ const useStyles= makeStyles(theme =>({
 
 export default React.memo((props) => {
   const classes = useStyles();
-  const [openDrawer, setOpenDrawer] = useState(false);
+  // const [openDrawer, setOpenDrawer] = useState(false);
   return (
     <Box display='flex'>
       <CssBaseline/>

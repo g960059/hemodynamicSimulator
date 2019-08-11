@@ -46,6 +46,16 @@ export const zip_series_with_label = (x,y) =>{
   return res
 }
 
+export const getMax = (data) => {
+  let i = data.length;
+  let max = [0,0];
+  while (i--) {
+    if (data[i].x > max[0]) { max[0] = data[i].x }
+    if (data[i].y > max[1]) { max[1] = data[i].y }
+  }
+  return max
+}
+
 const get_series = (times,series,y_index=null,x_index=null) => {
   const x = x_index === null ? times:get_column(series,x_index)
   const y = get_column(series, y_index)

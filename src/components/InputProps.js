@@ -1,6 +1,6 @@
 import React,{useContext,useState, useCallback } from 'react';
 import AppContext from '../contexts/AppContexts'
-import {Slider,Typography} from '@material-ui/core';
+import {Slider,Typography, Grid} from '@material-ui/core';
 import {PUSH_PROP_MUTATION} from '../actions'
 import InputSetting from '../settings/InputSetting'
 

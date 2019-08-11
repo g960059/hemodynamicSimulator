@@ -2,7 +2,7 @@ import React, {useState,useEffect,useReducer, useRef,useLayoutEffect, useCallbac
 import { makeStyles,createMuiTheme } from '@material-ui/core/styles';
 import rk  from './src/utils/RungeKutta/Rk4'
 import pv_func, {e} from './src/utils/pvFunc'
-import {Paper,Grid,Switch, Box} from '@material-ui/core'
+import {Paper,Grid,Switch, Box, Typography, Divider} from '@material-ui/core'
 import Layout from './src/components/Layout'
 import DefaultPrperty from './src/settings/DefaultProperty'
 import { ThemeProvider } from '@material-ui/styles';
@@ -12,9 +12,12 @@ import AppContext from './src/contexts/AppContexts'
 import {UPDATE_SERIES,RESET_SERIES,LOAD_SERIES,CALC_SERIES, UPDATE_PROPS, ShIFT_PROP_MUTATION} from './src/actions'
 
 import PVBuilder from './src/components/PVBuilder'
+import PlotFlow from './src/components/PlotFlow'
 import PropsController from './src/components/PropsController'
 
 import mutationTimings from './src/settings/mutationTimings'
+
+import {FlexibleXYPlot,XYPlot, LineSeries,MarkSeries, XAxis,YAxis} from 'react-vis';
 
 
 const theme = createMuiTheme({
@@ -49,6 +52,11 @@ const useStyles= makeStyles(theme =>({
   halfBox: {
     width: `calc(100vw * 9/ 12 / 2 - ${theme.spacing(1)}px * 3)`,
     height: `calc((100vw * 9/ 12 / 2 - ${theme.spacing(1)}px * 3) *3 / 4 )`,
+    backgroundColor: theme.palette.background.paper,
+  },
+  fullBox: {
+    width: `calc(100vw * 9/ 12  - ${theme.spacing(1)}px * 2)`,
+    height: `calc((100vw * 9/ 12 / 2 - ${theme.spacing(1)}px * 3) /2)`,
     backgroundColor: theme.palette.background.paper,
   }
 }))
@@ -101,14 +109,13 @@ const App =() =>{
       cancelAnimationFrame(rafId)
       deactivateCallbacks(mainCallback)
     }
-    console.log('INSIDE main callback payload: ',  payload)
     let data_ = data[data.length-1]
     let time_ = time[time.length-1]
     let delta = (timestamp -  prevTimestamp) * speed 
     const dataInFrame = []
     const timeInFrame = []
     while (delta > 0 ){
-      let dt = delta >= 2 ? 2 : delta
+      let dt = delta >= 4 ? 4 : delta
       data_ = rk(pv_func,state.hemodynamicProps)(data_,time_,dt)
       time_ += dt
       delta -= dt
@@ -135,7 +142,6 @@ const App =() =>{
         deactivateCallbacks(mainCallback)      
       }
     }
-    console.log({data:dataInFrame, time:timeInFrame})
     if(dataInFrame.length > 0){
       return {data:dataInFrame, time:timeInFrame}
     }else{
@@ -197,10 +203,6 @@ const App =() =>{
               <Grid item xs={3}>
                 <Box className={classes.sideContainer} px={2}>
                   <PropsController/>
-                  <p>Nostrud et proident consequat cupidatat in anim dolore sunt magna deserunt id esse aute elit. Officia reprehenderit culpa reprehenderit est commodo velit aute aute irure. Velit cupidatat sunt sint sit ullamco proident reprehenderit consequat esse adipisicing mollit irure. Sit cupidatat velit velit reprehenderit in sint enim ipsum voluptate amet amet. Velit Lorem duis laborum aliqua eu dolor est.</p>
-                  <p>Nostrud et proident consequat cupidatat in anim dolore sunt magna deserunt id esse aute elit. Officia reprehenderit culpa reprehenderit est commodo velit aute aute irure. Velit cupidatat sunt sint sit ullamco proident reprehenderit consequat esse adipisicing mollit irure. Sit cupidatat velit velit reprehenderit in sint enim ipsum voluptate amet amet. Velit Lorem duis laborum aliqua eu dolor est.</p>
-                  <p>Nostrud et proident consequat cupidatat in anim dolore sunt magna deserunt id esse aute elit. Officia reprehenderit culpa reprehenderit est commodo velit aute aute irure. Velit cupidatat sunt sint sit ullamco proident reprehenderit consequat esse adipisicing mollit irure. Sit cupidatat velit velit reprehenderit in sint enim ipsum voluptate amet amet. Velit Lorem duis laborum aliqua eu dolor est.</p>
-                  <p>Nostrud et proident consequat cupidatat in anim dolore sunt magna deserunt id esse aute elit. Officia reprehenderit culpa reprehenderit est commodo velit aute aute irure. Velit cupidatat sunt sint sit ullamco proident reprehenderit consequat esse adipisicing mollit irure. Sit cupidatat velit velit reprehenderit in sint enim ipsum voluptate amet amet. Velit Lorem duis laborum aliqua eu dolor est.</p>
                 </Box>
               </Grid>
               <Grid item container xs={9} className={classes.mainContainer} >
@@ -220,26 +222,36 @@ const App =() =>{
                         }}/>
                   </Grid>
                     <Grid item xs={6}>
-                      <Box className={classes.halfBox}>
+                     <Box className={classes.halfBox} boxShadow={1} p={2} position='relative' >
+                        <Box  lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={80}><Typography variant ='h6'>LV</Typography></Box>
                         <PVBuilder chamber='LV'/>
                       </Box>
                         
                     </Grid>
                     <Grid item xs={6}>
-                      <Box className={classes.halfBox}>
+                     <Box className={classes.halfBox} boxShadow={1} p={2} position='relative' >
+                        <Box  lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={80}><Typography variant ='h6'>RV</Typography></Box>
                         <PVBuilder chamber='RV'/>
                       </Box>
                     </Grid>
-                    <Grid item xs={6}>
-                      <Box className={classes.halfBox}>
+                    <Grid item xs={12}>
+                      <Box className={classes.fullBox} boxShadow={1} p={2} position='relative' >
+                        <Box  lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={80}><Typography variant ='h6'>MVF</Typography></Box>
+                        <PlotFlow name='MVF'/>
+                      </Box>
+                    </Grid>                    
+                    {/* <Grid item xs={6}>
+                      <Box className={classes.halfBox} boxShadow={1} p={2} position='relative' >
+                        <Box  lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={80}><Typography variant ='h6'>LA</Typography></Box>
                         <PVBuilder chamber='LA'/>
                       </Box>
                     </Grid>
                     <Grid item xs={6}>
-                      <Box className={classes.halfBox}>
+                     <Box className={classes.halfBox} boxShadow={1} p={2} position='relative' >
+                        <Box  lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={80}><Typography variant ='h6'>RA</Typography></Box>
                         <PVBuilder chamber='RA'/>
                       </Box>
-                    </Grid>                                          
+                    </Grid>                                           */}
                                         
                   </Grid>
                 </Box>
