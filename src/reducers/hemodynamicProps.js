@@ -1,7 +1,8 @@
 import {UPDATE_PROPS,LOAD_PROPS,RESET_PROPS} from '../actions'
+import DefaultPrperty from '../settings/DefaultProperty'
 
 
-export default (state={}, action) =>{
+export default (state=DefaultPrperty, action) =>{
   switch(action.type){
     case UPDATE_PROPS:
       console.log('UPDATE_PROPS: ', action.propsUpdated)

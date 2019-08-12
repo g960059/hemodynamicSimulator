@@ -1186,6 +1186,11 @@ react@^16.8.6:
     prop-types "^15.6.2"
     scheduler "^0.13.6"
 
+reactive-react-redux@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/reactive-react-redux/-/reactive-react-redux-4.2.0.tgz#127ce40189d1aaa73df800e350a2eccf23964f0a"
+  integrity sha512-iAVbf9NbwIU/dxqEj36gdgeYzsh6qVk88l0nzhuFGQ+hcylXJB4980HfS3t24Y0qcFHWHpb3AtgetM217hGXCA==
+
 redux@^4.0.4:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/redux/-/redux-4.0.4.tgz#4ee1aeb164b63d6a1bcc57ae4aa0b6e6fa7a3796"

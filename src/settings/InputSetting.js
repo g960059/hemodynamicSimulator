@@ -6,7 +6,7 @@ const InputSetting = {
     min:0 , max: 50, step: 1
   },
   LV_alpha : {
-    min: 0.01, max: 0.22, step: 0.001
+    min: 0.01, max: 0.07, step: 0.001
   },
   LV_beta : {
     min:0.1 , max:0.75 , step: 0.01

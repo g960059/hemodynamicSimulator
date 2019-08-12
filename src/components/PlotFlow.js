@@ -7,8 +7,12 @@ import '../../node_modules/react-vis/dist/style.css';
 import {FlexibleXYPlot,XYPlot, LineSeries,MarkSeries, XAxis,YAxis, LineSeriesCanvas} from 'react-vis';
 import { red } from '@material-ui/core/colors';
 
+import {
+  useTrackedState,
+} from 'reactive-react-redux';
+
 export default (props) => {
-  const {state,_} = useContext(AppContext);
+  const state = useTrackedState();
   const [trajectory, setTrajectory] = useState([]);
   const cvProps = useRef()
   const calcFlow = useRef()
@@ -23,7 +27,7 @@ export default (props) => {
           const pla = u_P(get_column(data, chamber_volume_mapping['LA']),time,cvProps.current.LA_Ees,cvProps.current.LA_V0,cvProps.current.LA_alpha, cvProps.current.LA_beta, cvProps.current.LA_Tmax, cvProps.current.LA_tau, cvProps.current.LA_AV_delay, cvProps.current.HR)
           const plv = u_P(get_column(data, chamber_volume_mapping['LV']),time,cvProps.current.LV_Ees,cvProps.current.LV_V0,cvProps.current.LV_alpha, cvProps.current.LV_beta, cvProps.current.LV_Tmax, cvProps.current.LV_tau, cvProps.current.LV_AV_delay, cvProps.current.HR)
           const res = []
-          for(let i=0; i<pla.length; i++){
+          for(let i=0; i<pla.length; i=i+3){
             if(pla[i]-plv[i]<0){
               res.push({ x:time[i], y: 0})
             }else{
@@ -40,8 +44,8 @@ export default (props) => {
     setTrajectory(trajectory =>{
       let newTrajectory = trajectory.concat(calcFlow.current(time,data))
       const len = newTrajectory.length
-      if (len >1000){
-        return newTrajectory.slice(len-1000+1,1000)
+      if (len >800){
+        return newTrajectory.slice(len-800+1,800)
       }
       return newTrajectory
     })

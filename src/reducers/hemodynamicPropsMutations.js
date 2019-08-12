@@ -1,7 +1,6 @@
 import {PUSH_PROP_MUTATION,ShIFT_PROP_MUTATION} from '../actions'
 
-
-export default (state={}, action) =>{
+export default (state=[], action) =>{
   switch(action.type){
     case PUSH_PROP_MUTATION:
       console.log('PUSH_PROP_MUTATION: ',[...state, action.propMutation] )

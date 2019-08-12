@@ -3,9 +3,14 @@ import AppContext from '../contexts/AppContexts'
 import {Slider,Typography, Grid} from '@material-ui/core';
 import {PUSH_PROP_MUTATION} from '../actions'
 import InputSetting from '../settings/InputSetting'
+import {
+  useDispatch,
+  useTrackedState,
+} from 'reactive-react-redux';
 
 const InputProps  = React.memo((props) => {
-  const {state,dispatch} = useContext(AppContext);
+  const state = useTrackedState();
+  const dispatch = useDispatch();
   const [inputValue, setInputValue] = useState( state.hemodynamicProps[props.name]);
   const {min,max,step} = InputSetting[props.name]
   const dispatchChangeComitted = useCallback((e,v) =>{

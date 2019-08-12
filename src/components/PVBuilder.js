@@ -7,8 +7,13 @@ import {get_column,  zip_series_with_label, getMax} from '../utils/utils'
 import '../../node_modules/react-vis/dist/style.css';
 import {FlexibleXYPlot, LineSeries,MarkSeries, XAxis,YAxis} from 'react-vis';
 
+import {
+  useTrackedState,
+} from 'reactive-react-redux';
+
+
 export default (props) => {
-  const {state,_} = useContext(AppContext);
+  const state = useTrackedState();
   const [trajectory, setTrajectory] = useState([]);
   const calcPressure = useRef()
   const chamber = props.chamber
@@ -60,13 +65,13 @@ export default (props) => {
         const step_size = 50
         let edpvr_points = []
         if(beta.current * (Math.exp(alpha.current*(limsRef.current[0]-V0.current))-1) <  limsRef.current[1]){
-          for(let i=0; i < step_size; i++){
+          for(let i=0; i < step_size; i=i+2){
             let x = limsRef.current[0] * i / step_size
             let y = beta.current * (Math.exp(alpha.current*(x-V0.current))-1)
             edpvr_points.push({x,y})
           }
         }else{
-          for(let i=0; i < step_size; i++){
+          for(let i=0; i < step_size; i=i+2){
             let y = limsRef.current[1] * i / step_size
             let x =  Math.log1p(y/beta.current) / alpha.current + V0.current
             edpvr_points.push({x,y})
