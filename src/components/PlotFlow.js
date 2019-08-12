@@ -1,11 +1,9 @@
-import React,{useEffect, useContext,useState,useRef} from 'react';
-import AppContext from '../contexts/AppContexts'
+import React,{useEffect, useState,useRef} from 'react';
 import {get_column} from '../utils/utils'
 import {u_P} from '../utils/pvFunc'
 
 import '../../node_modules/react-vis/dist/style.css';
 import {FlexibleXYPlot,XYPlot, LineSeries,MarkSeries, XAxis,YAxis, LineSeriesCanvas} from 'react-vis';
-import { red } from '@material-ui/core/colors';
 
 import {
   useTrackedState,

@@ -19,6 +19,16 @@ export const get_column = (matrix, col_index)=>{
   return col
 }
 
+export const zip_cols = (matrix, [x_index,y_index])=>{
+  const ml = matrix.length
+  const res = new Array(ml)
+  for(let i=0; i<ml; i++){
+    res[i] = {x: matrix[i][x_index], y: matrix[i][y_index]}
+  }
+  return res
+}
+
+
 export const get_col_chamber = col_index => matrix=>{
   const ml = matrix.length
   const col = new Array(ml)

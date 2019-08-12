@@ -46,7 +46,7 @@ const useStyles= makeStyles(theme =>({
   // },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(1),
+    padding: theme.spacing(1)
     // transition: theme.transitions.create()
   },
   // contentShift: {
@@ -61,7 +61,7 @@ export default React.memo((props) => {
   return (
     <Box display='flex'>
       <CssBaseline/>
-      <AppBar position='fixed' color='white' elevation={1}>
+      <AppBar position='fixed' color='inherit' elevation={1}>
         <Toolbar>
           <Typography variant="h6">{props.title}</Typography>
         </Toolbar>

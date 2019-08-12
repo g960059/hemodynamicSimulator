@@ -15,12 +15,13 @@ export const P = (V, t,Ees,V0, alpha, beta,Tmax, tau, AV_delay,HR)=>{
   return Ped + e(t-AV_delay,Tmax,tau,HR)*(Pes-Ped)
 }
 
-const pvFunc = (t,[Qvs, Qas, Qap, Qvp, Qlv, Qla, Qrv, Qra, Qas_prox,Qap_prox,...rest],
-  { Rcs,Rcp,Ras,Rvs,Rap,Rvp,Ras_prox,Rap_prox,Rmv,Rtv,Cas,Cvs,Cap,Cvp,Cas_prox,Cap_prox,
-    LV_Ees,LV_V0,LV_alpha,LV_beta,LV_Tmax,LV_tau,LV_AV_delay,
-    LA_Ees,LA_V0,LA_alpha,LA_beta,LA_Tmax,LA_tau,LA_AV_delay,
-    RV_Ees,RV_V0,RV_alpha,RV_beta,RV_Tmax,RV_tau,RV_AV_delay,
-    RA_Ees,RA_V0,RA_alpha,RA_beta,RA_Tmax,RA_tau,RA_AV_delay,HR} ={}
+const pvFunc = (t,[Qvs, Qas, Qap, Qvp, Qlv, Qla, Qrv, Qra, Qas_prox,Qap_prox],
+    { Rcs,Rcp,Ras,Rvs,Rap,Rvp,Ras_prox,Rap_prox,Rmv,Rtv,Cas,Cvs,Cap,Cvp,Cas_prox,Cap_prox,
+      LV_Ees,LV_V0,LV_alpha,LV_beta,LV_Tmax,LV_tau,LV_AV_delay,
+      LA_Ees,LA_V0,LA_alpha,LA_beta,LA_Tmax,LA_tau,LA_AV_delay,
+      RV_Ees,RV_V0,RV_alpha,RV_beta,RV_Tmax,RV_tau,RV_AV_delay,
+      RA_Ees,RA_V0,RA_alpha,RA_beta,RA_Tmax,RA_tau,RA_AV_delay,HR} ={}
+    ,logger =null
     )=>{
     const Plv = P(Qlv,t, LV_Ees, LV_V0, LV_alpha, LV_beta, LV_Tmax, LV_tau, LV_AV_delay, HR)
     const Pla = P(Qla,t, LA_Ees, LA_V0, LA_alpha, LA_beta, LA_Tmax, LA_tau, LA_AV_delay, HR)
@@ -49,13 +50,14 @@ const pvFunc = (t,[Qvs, Qas, Qap, Qvp, Qlv, Qla, Qrv, Qra, Qas_prox,Qap_prox,...
     if(Itv < 0){
       Itv = 0
     }
-        
-    return [Ias-Ivs, Ics-Ias, Icp-Iap, Iap-Ivp, Imv-Iasp, Ivp-Imv, Itv-Iapp, Ivs-Itv, Iasp-Ics, Iapp-Icp, Plv, Pla, Prv, Pra,Ias,Ics,Imv,Ivp,Iap,Icp,Itv,Ivs,Iasp,Iapp]
+    if(logger != null){
+      logger.push({t,Qvs, Qas, Qap, Qvp, Qlv, Qla, Qrv, Qra, Qas_prox,Qap_prox,Plv, Pla, Prv, Pra,Ias,Ics,Imv,Ivp,Iap,Icp,Itv,Ivs,Iasp,Iapp})
+    }
+    return [Ias-Ivs, Ics-Ias, Icp-Iap, Iap-Ivp, Imv-Iasp, Ivp-Imv, Itv-Iapp, Ivs-Itv, Iasp-Ics, Iapp-Icp]
 }
 
-// 1:Qvs ,2:Qas,3:Qap,4:Qvp,5:Qlv,6:Qla,7:Qrv,8:Qra,9:Qas_prox,10:Plv,11:Pla,12:Prv,13:Pra,14:Ias,15:Ics,16:Imv,17:Ivp,18:Iap,19:Icp,20:Itv,21:Ivs,22:Iasp,23:Iapp
-
-
+//0:Qvs, 1:Qas,2:Qap,3:Qvp,4:Qlv,5:Qla,6:Qrv,7:Qra,8:Qas_prox,9:Qap_prox,10:Plv,11:Pla,12:Prv,13:Pra,14:Ias,15:Ics,16:Imv,17:Ivp,18:Iap,19:Icp,20:Itv,21:Ivs,22:Iasp,23:Iapp
+//{LV:[4,10],LA:[5,11],RV:[6,12],RA:[7,13]}
 
 
 export const u_P=(V,T, Ees,V0,alpha, beta, Tmax, tau, AV_delay, HR) =>{

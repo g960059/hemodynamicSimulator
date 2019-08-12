@@ -78,13 +78,12 @@ const App =() =>{
                   <Grid container spacing={1}>
                     <Grid item xs={12}>
                       <Engine/>
-                  </Grid>
+                    </Grid>
                     <Grid item xs={6}>
                      <Box className={classes.halfBox} boxShadow={1} p={2} position='relative' >
                         <Box  lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={80}><Typography variant ='h6'>LV</Typography></Box>
                         <PVBuilder chamber='LV'/>
                       </Box>
-                        
                     </Grid>
                     <Grid item xs={6}>
                      <Box className={classes.halfBox} boxShadow={1} p={2} position='relative' >
@@ -105,12 +104,12 @@ const App =() =>{
                         <PVBuilder chamber='RA'/>
                       </Box>
                     </Grid>                                          
-                    <Grid item xs={12}>
+                    {/* <Grid item xs={12}>
                       <Box className={classes.fullBox} boxShadow={1} p={2} position='relative' >
                         <Box  lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={80}><Typography variant ='h6'>MVF</Typography></Box>
                         <PlotFlow name='MVF'/>
                       </Box>
-                    </Grid>                                              
+                    </Grid>                                               */}
                   </Grid>
                 </Box>
               </Grid>

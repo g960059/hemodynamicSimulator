@@ -14,7 +14,7 @@ const Engine = props =>{
   const state = useTrackedState();
   const dispatch = useDispatch();
 
-  const [speed, setSpeed] = useState(0.2);
+  const [speed, setSpeed] = useState(0.3);
 
   const rafIdRef = useRef(new Set())
   const activeCallbacks = useRef(new Set())
@@ -40,34 +40,28 @@ const Engine = props =>{
   }
 
   const mainCallback = (timestamp,prevTimestamp, payload) => {
-    let {data, time} = payload
+    let {data, time, logger} = payload
     if(data.length === 0){
       cancelAnimationFrame(rafId)
       deactivateCallbacks(mainCallback)
     }
-    let data_ = data[data.length-1]
-    let time_ = time[time.length-1]
     let delta = (timestamp -  prevTimestamp) * speed 
-    const dataInFrame = []
-    const timeInFrame = []
+    const new_logger = []
     while (delta > 0 ){
       let dt = delta >= 2 ? 2 : delta
-      data_ = rk(pv_func,state.hemodynamicProps)(data_,time_,dt)
-      time_ += dt
+      data = rk(pv_func,state.hemodynamicProps,new_logger)(data,time,dt)
+      time += dt
       delta -= dt
-      dataInFrame.push(data_)
-      timeInFrame.push(time_)
     }
-    if(dataInFrame.length > 0){
-      dispatch({
-        type: UPDATE_SERIES,
-        data: dataInFrame,
-        time: timeInFrame
-      })
-    }
+    dispatch({
+      type: UPDATE_SERIES,
+      data,
+      time,
+      logger: new_logger
+    })
     if(state.hemodynamicPropsMutations.length !== 0){
       const propMutation = state.hemodynamicPropsMutations[0]
-      if(isTiming(Object.keys(propMutation)[0])(time_)){
+      if(isTiming(Object.keys(propMutation)[0])(time)){
         dispatch({
             type: UPDATE_PROPS,
             propsUpdated: propMutation,
@@ -78,11 +72,7 @@ const Engine = props =>{
         deactivateCallbacks(mainCallback)      
       }
     }
-    if(dataInFrame.length > 0){
-      return {data:dataInFrame, time:timeInFrame}
-    }else{
-      return payload
-    }
+    return {data, time, logger: new_logger}
   }
 
   const activateCallbacks = callback =>{
@@ -140,7 +130,7 @@ const Engine = props =>{
               rafIdRef.current.clear()
               setSpeed(0)
             }else{
-              setSpeed(0.2)
+              setSpeed(0.3)
             }
           }}/>
   )
