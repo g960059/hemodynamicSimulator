@@ -12,7 +12,6 @@ import {
 export default (props) => {
   const state = useTrackedState();
   const [trajectory, setTrajectory] = useState([]);
-  const chamber = props.chamber
   const limsRef = useRef([0,0])
   const ESPVR_Ref = useRef([])
   const EDPVR_Ref = useRef([])
@@ -23,7 +22,9 @@ export default (props) => {
   const beta = useRef()
 
   const chamber_mapping ={LV:['Qlv','Plv'],LA:['Qla','Pla'],RV:['Qrv','Prv'],RA:['Qra','Pra']}
+
   useEffect(()=>{
+    const chamber = props.chamber
     const cv_props = state.hemodynamicProps
     // const chamber_volume_mapping = {"LV":4, "LA":5, "RV":6, "RA":7}
     // const chamber_mapping ={LV:[4,10],LA:[5,11],RV:[6,12],RA:[7,13]}
@@ -38,13 +39,13 @@ export default (props) => {
     const step_size = 50
     let edpvr_points = []
     if(beta.current * (Math.exp(alpha.current*(limsRef.current[0]-V0.current))-1) <  limsRef.current[1]){
-      for(let i=0; i < step_size; i=i+2){
+      for(let i=0; i < step_size; i++){
         let x = limsRef.current[0] * i / step_size
         let y = beta.current * (Math.exp(alpha.current*(x-V0.current))-1)
         edpvr_points.push({x,y})
       }
     }else{
-      for(let i=0; i < step_size; i=i+2){
+      for(let i=0; i < step_size; i++){
         let y = limsRef.current[1] * i / step_size
         let x =  Math.log1p(y/beta.current) / alpha.current + V0.current
         edpvr_points.push({x,y})
@@ -89,8 +90,8 @@ export default (props) => {
         }          
       }
       const len = newTrajectory.length
-      if (len >500){
-        return newTrajectory.slice(len-500+1,500)
+      if (len >300){
+        return newTrajectory.slice(len-300+1,300)
       }
       return newTrajectory
     })

@@ -14,7 +14,7 @@ const Engine = props =>{
   const state = useTrackedState();
   const dispatch = useDispatch();
 
-  const [speed, setSpeed] = useState(0.3);
+  const [speed, setSpeed] = useState(0.2);
 
   const rafIdRef = useRef(new Set())
   const activeCallbacks = useRef(new Set())
@@ -47,11 +47,13 @@ const Engine = props =>{
     }
     let delta = (timestamp -  prevTimestamp) * speed 
     const new_logger = []
+    let flag = true
     while (delta > 0 ){
       let dt = delta >= 2 ? 2 : delta
-      data = rk(pv_func,state.hemodynamicProps,new_logger)(data,time,dt)
+      data = flag ? rk(pv_func,state.hemodynamicProps,new_logger)(data,time,dt): rk(pv_func,state.hemodynamicProps,null)(data,time,dt)
       time += dt
       delta -= dt
+      flag = !flag
     }
     dispatch({
       type: UPDATE_SERIES,
@@ -130,7 +132,7 @@ const Engine = props =>{
               rafIdRef.current.clear()
               setSpeed(0)
             }else{
-              setSpeed(0.3)
+              setSpeed(0.2)
             }
           }}/>
   )

@@ -1,6 +1,7 @@
 import React, {useState,useEffect,useReducer, useRef,useLayoutEffect, useCallback} from 'react';
 import { makeStyles,createMuiTheme } from '@material-ui/core/styles';
-import {Paper,Grid, Box, Typography, Divider} from '@material-ui/core'
+import {Paper,Grid, Box, Typography, Divider, FormControl, Select, InputLabel, MenuItem, Checkbox, ListItemText, Input, Fab, Menu, Button} from '@material-ui/core'
+import AddIcon from '@material-ui/icons/Add';
 import Layout from './src/components/Layout'
 import { ThemeProvider } from '@material-ui/styles';
 
@@ -52,16 +53,31 @@ const useStyles= makeStyles(theme =>({
     height: `calc((100vw * 9/ 12 / 2 - ${theme.spacing(1)}px * 3) *3 / 4 )`,
     backgroundColor: theme.palette.background.paper,
   },
+  fullWidthBox: {
+    width: `calc(100vw * 9/ 12  - ${theme.spacing(5)}px)`,
+    height: `calc((100vw * 9/ 12 / 2 - ${theme.spacing(5)}px) / 2)`,
+    backgroundColor: theme.palette.background.paper,
+  },
   fullBox: {
-    width: `calc(100vw * 9/ 12  - ${theme.spacing(1)}px * 2)`,
-    height: `calc((100vw * 9/ 12 / 2 - ${theme.spacing(1)}px * 3) /2)`,
+    width: `calc(100vw * 9/ 12  - ${theme.spacing(5)}px)`,
+    height: `calc((100vw * 9/ 12  - ${theme.spacing(5)}px) / 2 )`,
     backgroundColor: theme.palette.background.paper,
   }
 }))
 
+const store = createStore(reducer)
+
 const App =() =>{
   const classes = useStyles()
-  const store = createStore(reducer)
+  
+  // const [display, setDisplay] = useState({
+  //   'LV': {size:'full'}
+  // });
+  const [propTypes, setPropTypes] = useState({
+    'Imv': { name: 'Mitral Valve Flow', selected: true},
+    'Iasp': { name: 'Aortic Valve Flow', selected: false}
+  });
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
   return (
     <ThemeProvider theme={theme}>
@@ -76,21 +92,51 @@ const App =() =>{
               <Grid item container xs={9} className={classes.mainContainer} >
                 <Box px={1}>
                   <Grid container spacing={1}>
-                    <Grid item xs={12}>
-                      <Engine/>
+                    <Grid item xs={12} container>
+                      <Grid item xs={6}>
+                        <Engine/>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Fab size='small' color='primary' aria-controls="simple-menu" aria-haspopup="true" onClick={e=>setAnchorEl(e.currentTarget)}>
+                          <AddIcon/>
+                        </Fab>
+                        <Menu
+                          id="simple-menu"
+                          anchorEl={anchorEl}
+                          open={Boolean(anchorEl)}
+                          onClose={()=>setAnchorEl(null)}
+                        >
+                        {Object.keys(propTypes).map(key =>{
+                          const clickHandler = e=>{
+                            e.preventDefault();
+                            setPropTypes(propTypes=>{
+                              const newPropTypes = {...propTypes}
+                              newPropTypes[key].selected = !propTypes[key].selected 
+                              return newPropTypes
+                            })
+                          }
+                          return (
+                            <MenuItem key={key} onClick={clickHandler}>
+                              <Checkbox checked ={propTypes[key].selected}></Checkbox>
+                              <ListItemText>{propTypes[key].name}</ListItemText>
+                            </MenuItem>
+                            )
+                        })}
+                        </Menu>
+                      </Grid>
                     </Grid>
-                    <Grid item xs={6}>
-                     <Box className={classes.halfBox} boxShadow={1} p={2} position='relative' >
+                    <Grid item xs={12}>
+                     <Box className={classes.fullBox} boxShadow={1} p={2} position='relative' >
                         <Box  lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={80}><Typography variant ='h6'>LV</Typography></Box>
                         <PVBuilder chamber='LV'/>
                       </Box>
                     </Grid>
-                    <Grid item xs={6}>
+                    {/* <Grid item xs={6}>
                      <Box className={classes.halfBox} boxShadow={1} p={2} position='relative' >
                         <Box  lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={80}><Typography variant ='h6'>RV</Typography></Box>
                         <PVBuilder chamber='RV'/>
                       </Box>
-                    </Grid>
+                    </Grid> */}
               
                     <Grid item xs={6}>
                       <Box className={classes.halfBox} boxShadow={1} p={2} position='relative' >
@@ -104,12 +150,12 @@ const App =() =>{
                         <PVBuilder chamber='RA'/>
                       </Box>
                     </Grid>                                          
-                    {/* <Grid item xs={12}>
-                      <Box className={classes.fullBox} boxShadow={1} p={2} position='relative' >
+                    <Grid item xs={12}>
+                      <Box className={classes.fullWidthBox} boxShadow={1} p={2} position='relative' >
                         <Box  lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={80}><Typography variant ='h6'>MVF</Typography></Box>
-                        <PlotFlow name='MVF'/>
+                        <PlotFlow name='Imv'/>
                       </Box>
-                    </Grid>                                               */}
+                    </Grid>                                              
                   </Grid>
                 </Box>
               </Grid>

@@ -1,4 +1,4 @@
-const rk4 =  (f,args={},logger) => (x,t,dt) =>{
+const rk4 =  (f,args={},logger=null) => (x,t,dt) =>{
   const x_dim = x.length
   const k1  = new Array(x_dim)
   const k2  = new Array(x_dim)
@@ -8,7 +8,12 @@ const rk4 =  (f,args={},logger) => (x,t,dt) =>{
   const x_k3  = new Array(x_dim)
   const x_k4  = new Array(x_dim)
   const res = new Array(x_dim)
-  const f_1 = f(t,x,args,logger)
+  let f_1
+  if(logger != null){
+    f_1 = f(t,x,args,logger)
+  }else{
+    f_1 = f(t,x,args)
+  }
   for(let i=0;i<x_dim; i++){
     k1[i] = f_1[i]*dt
     x_k2[i] = x[i] + k1[i]/2
