@@ -1,8 +1,8 @@
-import React, {useState,useEffect,useReducer, useRef,useLayoutEffect, useCallback} from 'react';
+import React, {useState,} from 'react';
 import { makeStyles,createMuiTheme } from '@material-ui/core/styles';
-import {Paper,Grid, Box, Typography, Divider, FormControl, Select, InputLabel, MenuItem, Checkbox, ListItemText, Input, Fab, Menu, Button} from '@material-ui/core'
-import AddIcon from '@material-ui/icons/Add';
-import Layout from './src/components/Layout'
+import {Paper,Grid, Box, Typography, MenuItem, Checkbox, ListItemText, Menu, Tabs,Tab, AppBar, Toolbar, CssBaseline} from '@material-ui/core'
+import {Add, Clear} from '@material-ui/icons';
+// import Layout from './src/components/Layout'
 import { ThemeProvider } from '@material-ui/styles';
 
 import reducer from './src/reducers'
@@ -17,7 +17,6 @@ import { createStore } from 'redux';
 import {
   Provider,
 } from 'reactive-react-redux';
-
 
 const theme = createMuiTheme({
   mixins: {
@@ -35,34 +34,56 @@ const theme = createMuiTheme({
 theme.shadows[1] = '0px 1px 5px 1px rgba(0,0,0,0.1)'
 
 const useStyles= makeStyles(theme =>({
+  toolbar: {
+    height: `calc(${theme.mixins.toolbar.minHeight}px - 8px)`
+  },
+  content: {
+    flexGrow: 1
+  },
   paper: {
     padding: theme.spacing(2),
   },
   sideContainer: {
     height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`,
     overflowY: 'scroll',
-    backgroundColor: theme.palette.background.paper
+    backgroundColor: theme.palette.background.default,
+    borderRight: '1px solid #e6e6e9'
   },
   mainContainer: {
     height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`,
     overflowY: 'scroll',
-    paddingLeft: `${theme.spacing(1)}px`
+    // paddingLeft: `${theme.spacing(1)}px`,
+    // paddingTop: `${theme.spacing(1)}px`
   },
   halfBox: {
-    width: `calc(100vw * 9/ 12 / 2 - ${theme.spacing(1)}px * 3)`,
+    maxWidth: `calc(100vw * 9/ 12 / 2 - ${theme.spacing(0)}px * 3)`,
     height: `calc((100vw * 9/ 12 / 2 - ${theme.spacing(1)}px * 3) *3 / 4 )`,
     backgroundColor: theme.palette.background.paper,
   },
+  halfBoxGrid: {
+    // "&:nth-child(odd)":{
+    //   borderRight: 'solid 1px #e0e0e0',
+    //   borderBottom: 'solid 1px #e0e0e0',
+    //   borderLeft: 'solid 1px #e0e0e0',
+    // },
+    // "&:nth-child(even)":{
+    //   borderBottom: 'solid 1px #e0e0e0'
+    // },
+    boxShadow:'1px 1px 2px 0px rgba(0,0,0,0.08)'
+  },
   fullWidthBox: {
-    width: `calc(100vw * 9/ 12  - ${theme.spacing(5)}px)`,
+    maxWidth: `calc(100vw * 9/ 12  - ${theme.spacing(0)}px)`,
     height: `calc((100vw * 9/ 12 / 2 - ${theme.spacing(5)}px) / 2)`,
     backgroundColor: theme.palette.background.paper,
+    boxShadow:'1px 1px 2px 0px rgba(0,0,0,0.08)',
   },
   fullBox: {
-    width: `calc(100vw * 9/ 12  - ${theme.spacing(5)}px)`,
+    // width: `calc(100vw * 9/ 12  - ${theme.spacing(5)}px)`,
     height: `calc((100vw * 9/ 12  - ${theme.spacing(5)}px) / 2 )`,
     backgroundColor: theme.palette.background.paper,
-  }
+  },title: {
+    flexGrow: 1,
+  },
 }))
 
 const store = createStore(reducer)
@@ -73,6 +94,12 @@ const App =() =>{
   // const [display, setDisplay] = useState({
   //   'LV': {size:'full'}
   // });
+  const [PVpropTypes, setPVpropTypes] = useState({
+    'LV': {name: 'Left Ventricle', selected: true},
+    'RV': {name: 'Right Ventricle', selected: true},
+    'LA': {name: 'Left Atrium', selected: true},
+    'RA': {name: 'Right Atrium', selected: true},
+  });
   const [propTypes, setPropTypes] = useState({
     'Imv': { name: 'Mitral Valve Flow', selected: true},
     'Iasp': { name: 'Aortic Valve Flow', selected: false}
@@ -82,86 +109,107 @@ const App =() =>{
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <Layout title='PV loops' >
-            <Grid container>
-              <Grid item xs={3}>
-                <Box className={classes.sideContainer} px={2}>
-                  <PropsController/>
-                </Box>
-              </Grid>
-              <Grid item container xs={9} className={classes.mainContainer} >
-                <Box px={1}>
-                  <Grid container spacing={1}>
-                    <Grid item xs={12} container>
-                      <Grid item xs={6}>
-                        <Engine/>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <Fab size='small' color='primary' aria-controls="simple-menu" aria-haspopup="true" onClick={e=>setAnchorEl(e.currentTarget)}>
-                          <AddIcon/>
-                        </Fab>
-                        <Menu
-                          id="simple-menu"
-                          anchorEl={anchorEl}
-                          open={Boolean(anchorEl)}
-                          onClose={()=>setAnchorEl(null)}
-                        >
-                        {Object.keys(propTypes).map(key =>{
-                          const clickHandler = e=>{
-                            e.preventDefault();
-                            setPropTypes(propTypes=>{
-                              const newPropTypes = {...propTypes}
-                              newPropTypes[key].selected = !propTypes[key].selected 
-                              return newPropTypes
-                            })
-                          }
-                          return (
-                            <MenuItem key={key} onClick={clickHandler}>
-                              <Checkbox checked ={propTypes[key].selected}></Checkbox>
-                              <ListItemText>{propTypes[key].name}</ListItemText>
-                            </MenuItem>
-                            )
-                        })}
-                        </Menu>
-                      </Grid>
-                    </Grid>
-                    <Grid item xs={12}>
-                     <Box className={classes.fullBox} boxShadow={1} p={2} position='relative' >
-                        <Box  lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={80}><Typography variant ='h6'>LV</Typography></Box>
-                        <PVBuilder chamber='LV'/>
-                      </Box>
-                    </Grid>
-                    {/* <Grid item xs={6}>
-                     <Box className={classes.halfBox} boxShadow={1} p={2} position='relative' >
-                        <Box  lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={80}><Typography variant ='h6'>RV</Typography></Box>
-                        <PVBuilder chamber='RV'/>
-                      </Box>
-                    </Grid> */}
-              
-                    <Grid item xs={6}>
-                      <Box className={classes.halfBox} boxShadow={1} p={2} position='relative' >
-                        <Box  lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={80}><Typography variant ='h6'>LA</Typography></Box>
-                        <PVBuilder chamber='LA'/>
-                      </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                     <Box className={classes.halfBox} boxShadow={1} p={2} position='relative' >
-                        <Box  lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={80}><Typography variant ='h6'>RA</Typography></Box>
-                        <PVBuilder chamber='RA'/>
-                      </Box>
-                    </Grid>                                          
-                    <Grid item xs={12}>
-                      <Box className={classes.fullWidthBox} boxShadow={1} p={2} position='relative' >
-                        <Box  lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={80}><Typography variant ='h6'>MVF</Typography></Box>
-                        <PlotFlow name='Imv'/>
-                      </Box>
-                    </Grid>                                              
-                  </Grid>
-                </Box>
-              </Grid>
-
+        <Box display='flex'>
+        <CssBaseline/>
+        <AppBar position='fixed' elevation={1}>
+          <Toolbar>
+            <Typography variant="h6" className={classes.title}>PV loops</Typography>
+            <Engine/>
+            <Add fontSize='large' aria-controls="simple-menu" aria-haspopup="true" onClick={e=>setAnchorEl(e.currentTarget)}
+              style={{cursor: 'pointer'}}
+              />
+            <Menu
+              id="simple-menu"
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={()=>setAnchorEl(null)}
+            >
+            {Object.keys(propTypes).map(key =>{
+              const clickHandler = e=>{
+                e.preventDefault();
+                setPropTypes(propTypes=>{
+                  const newPropTypes = {...propTypes}
+                  newPropTypes[key].selected = !propTypes[key].selected 
+                  return newPropTypes
+                })
+              }
+              return (
+                <MenuItem key={key} onClick={clickHandler}>
+                  <Checkbox checked ={propTypes[key].selected}></Checkbox>
+                  <ListItemText>{propTypes[key].name}</ListItemText>
+                </MenuItem>
+                )
+            })}
+            {Object.keys(PVpropTypes).map(key =>{
+              const clickHandler = e=>{
+                e.preventDefault();
+                setPVpropTypes(PVpropTypes=>{
+                  const newPVPropTypes = {...PVpropTypes}
+                  newPVPropTypes[key].selected = !PVpropTypes[key].selected 
+                  return newPVPropTypes
+                })
+              }
+              return (
+                <MenuItem key={key} onClick={clickHandler}>
+                  <Checkbox checked ={PVpropTypes[key].selected}></Checkbox>
+                  <ListItemText>{PVpropTypes[key].name}</ListItemText>
+                </MenuItem>
+                )
+            })}
+            </Menu>
+    
+          </Toolbar>
+        </AppBar>
+        <Box className={classes.content} bgcolor="background.paper">
+          <div className={classes.toolbar}/>
+          <Grid container>
+            <Grid item xs={3}>
+              <Box className={classes.sideContainer} >
+                <PropsController/>
+              </Box>
             </Grid>
-        </Layout>
+            <Grid item container xs={9} className={classes.mainContainer} >
+              <Box>
+                <Grid container spacing={1} style={{width: `calc(100% + 4px)`, marginBottom:'4px'}}>
+                  { 
+                    Object.keys(PVpropTypes).map((key,index) => {
+                    if(!PVpropTypes[key].selected){
+                      return null
+                    }else{
+                      return (
+                      <Grid item xs={6} key={key} className={classes.halfBoxGrid}>
+                        <Box className={classes.halfBox} px ={2} pt={2} pb={-1} position='relative' >
+                          <Box lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={70} top={3}><Typography variant ='h6'>{PVpropTypes[key].name}</Typography></Box>
+                          <Box color="text.secondary" position='absolute' zIndex={3} right={10} top={5} >
+                            <Clear fontSize='small' aria-controls="simple-menu" aria-haspopup="true"  style={{cursor: 'pointer'}}
+                                onClick={()=>{setPVpropTypes(PVpropTypes=>{
+                                  const newPVPropTypes = {...PVpropTypes}
+                                  newPVPropTypes[key].selected = false
+                                  return newPVPropTypes
+                                })}}
+                            />
+                          </Box>
+                          <PVBuilder chamber={key}/>
+                        </Box>
+                      </Grid>
+                      )}
+                    }
+                  )}
+                </Grid>
+                <Grid container>
+                  <Grid item xs={12}>
+                    <Box className={classes.fullWidthBox}  px={2} pt={2} pb ={-1} position='relative' >
+                      <Box  lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={80}><Typography variant ='h6'>MVF</Typography></Box>
+                      <PlotFlow name='Imv'/>
+                    </Box>
+                  </Grid>                                              
+                </Grid>
+              </Box>
+            </Grid>
+
+          </Grid>
+        </Box>
+        </Box>
       </Provider>
     </ThemeProvider>
   )

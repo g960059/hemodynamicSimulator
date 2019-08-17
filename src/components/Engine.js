@@ -1,14 +1,17 @@
 import React, {useState, useRef,useLayoutEffect} from 'react';
+
 import rk  from '../utils/RungeKutta/Rk4'
 import pv_func, {e} from '../utils/pvFunc'
-import {Switch,} from '@material-ui/core'
 import mutationTimings from '../settings/mutationTimings'
 import {UPDATE_SERIES,RESET_SERIES,LOAD_SERIES,CALC_SERIES, UPDATE_PROPS, ShIFT_PROP_MUTATION} from '../actions'
+
+import {PlayArrow,Pause} from '@material-ui/icons';
 
 import {
   useDispatch,
   useTrackedState,
 } from 'reactive-react-redux';
+
 
 const Engine = props =>{
   const state = useTrackedState();
@@ -122,20 +125,39 @@ const Engine = props =>{
     return ()=>deactivateCallbacks(mainCallback)
   }, [speed, state.hemodynamicPropsMutations])
 
-  return (
-        <Switch
-          checked={speed!=0}
-          onChange={()=>{
-            if(speed!=0){
-              Array.from(rafIdRef.current).map(id=>cancelAnimationFrame(id))
-              activeCallbacks.current.clear()
-              rafIdRef.current.clear()
-              setSpeed(0)
-            }else{
-              setSpeed(0.2)
-            }
-          }}/>
-  )
+  if(speed!=0){
+    return( 
+        <Pause fontSize='large'
+        style={{cursor:'pointer'}}
+        onClick={()=>{
+            Array.from(rafIdRef.current).map(id=>cancelAnimationFrame(id))
+                  activeCallbacks.current.clear()
+                  rafIdRef.current.clear()
+                  setSpeed(0)
+          }} />
+      )
+  }else{
+    return <PlayArrow  fontSize='large' 
+    style={{cursor:'pointer'}}
+    onClick={()=>{
+        setSpeed(0.2)
+      }}/>
+  }
+  // return (
+  //       <Switch
+  //         checked={speed!=0}
+  //         onChange={()=>{
+  //           if(speed!=0){
+  //             Array.from(rafIdRef.current).map(id=>cancelAnimationFrame(id))
+  //             activeCallbacks.current.clear()
+  //             rafIdRef.current.clear()
+  //             setSpeed(0)
+  //           }else{
+  //             setSpeed(0.2)
+  //           }
+  //         }}/>
+        
+  // )
 }
 
 export default Engine

@@ -1,17 +1,34 @@
 import React,{useEffect, useState,useRef} from 'react';
-import {get_column,zip_cols} from '../utils/utils'
-import {u_P} from '../utils/pvFunc'
+import {zip_cols} from '../utils/utils'
+// import {u_P} from '../utils/pvFunc'
 
 import '../../node_modules/react-vis/dist/style.css';
-import {FlexibleXYPlot,XYPlot, LineSeries,MarkSeries, XAxis,YAxis, LineSeriesCanvas} from 'react-vis';
+import {FlexibleXYPlot, LineSeries,XAxis,YAxis} from 'react-vis';
 
 import {
   useTrackedState,
 } from 'reactive-react-redux';
 
+const data_limit = 800
+
 export default (props) => {
   const state = useTrackedState();
   const [trajectory, setTrajectory] = useState([]);
+
+
+  useEffect(() => {
+    const {data,time,logger} = state.hemodynamicSeries
+    setTrajectory(trajectory =>{
+      let newTrajectory = trajectory.concat(zip_cols(logger,['t',props.name]))
+      const len = newTrajectory.length
+      if (len >data_limit){
+        return newTrajectory.slice(len-data_limit+3)
+      }else{
+        return newTrajectory
+      }
+    })
+  }, [state.hemodynamicSeries]);
+
   // const cvProps = useRef()
   // const calcFlow = useRef()
   
@@ -37,18 +54,6 @@ export default (props) => {
   //   }
   // }, [state.hemodynamicProps]);
 
-  useEffect(() => {
-    const {data,time,logger} = state.hemodynamicSeries
-    setTrajectory(trajectory =>{
-      let newTrajectory = trajectory.concat(zip_cols(logger,['t',props.name]))
-      const len = newTrajectory.length
-      if (len >600){
-        return newTrajectory.slice(len-600+1,600)
-      }
-      return newTrajectory
-    })
-  }, [state.hemodynamicSeries]);
-
   // let Ias = (Qas/Cas-Qvs/Cvs)/Ras
   // let Ics = (Qas_prox/Cas_prox-Qas/Cas)/Rcs  
   // let Imv = (Pla-Plv)/Rmv
@@ -62,7 +67,7 @@ export default (props) => {
 
   return (
     <FlexibleXYPlot > 
-      <XAxis/>
+      {/* <XAxis/> */}
       <YAxis/>
       <LineSeries data={trajectory}/>    
       {/* {trajectory.length > 2 ?  <MarkSeries data={[{...trajectory[trajectory.length-1], size: 3},{...trajectory[0], size: 10, opacity:0},{...trajectory[0], size: 0, opacity:0}]}/>: null} */}

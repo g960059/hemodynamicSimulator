@@ -1,6 +1,5 @@
-import React,{useContext,useState, useCallback } from 'react';
-import AppContext from '../contexts/AppContexts'
-import {Slider,Typography, Grid} from '@material-ui/core';
+import React,{useState, useCallback } from 'react';
+import {Slider,Typography, Grid,Box} from '@material-ui/core';
 import {PUSH_PROP_MUTATION} from '../actions'
 import InputSetting from '../settings/InputSetting'
 import {
@@ -26,10 +25,24 @@ const InputProps  = React.memo((props) => {
   })
   return (
     <>
-      <Typography id={props.name} gutterBottom>
-        {props.name}
-      </Typography>
-      <Slider value = {inputValue} aria-labelledby = {props.name}  onChange={handleChange} onChangeCommitted={dispatchChangeComitted} min={min} max={max} step={step} valueLabelDisplay="auto"/>
+      <Box display={{xs:'none',sm:'none', md:'block'}} py={1}>
+        <Grid container>
+          <Grid item md={5}>
+              <Typography id={props.name}>
+                {props.name}
+              </Typography>
+          </Grid>
+          <Grid item md={7}>
+            <Slider value = {inputValue} aria-labelledby = {props.name}  onChange={handleChange} onChangeCommitted={dispatchChangeComitted} min={min} max={max} step={step} valueLabelDisplay="auto"/>
+          </Grid>
+        </Grid>
+      </Box>
+      <Box display={{sm:'block', md:'none'}} pb={1}>
+          <Typography id={props.name}>
+            {props.name}
+          </Typography>
+          <Slider value = {inputValue} aria-labelledby = {props.name}  onChange={handleChange} onChangeCommitted={dispatchChangeComitted} min={min} max={max} step={step} valueLabelDisplay="auto"/>
+      </Box>
     </>
   )
 })
