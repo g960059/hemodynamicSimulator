@@ -50,6 +50,7 @@ export default {
   RA_tau : 20,
   RA_AV_delay : 0,
 
-  HR : 60
+  HR : 60,
+  Volume: 1500, 
 }
 

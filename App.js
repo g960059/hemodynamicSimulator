@@ -1,6 +1,6 @@
 import React, {useState,} from 'react';
 import { makeStyles,createMuiTheme } from '@material-ui/core/styles';
-import {Paper,Grid, Box, Typography, MenuItem, Checkbox, ListItemText, Menu, Tabs,Tab, AppBar, Toolbar, CssBaseline} from '@material-ui/core'
+import {Paper,Grid, Box, Typography, MenuItem, Checkbox, ListItemText, Menu, Tabs,Tab, AppBar, Toolbar, CssBaseline, Divider,ListSubheader} from '@material-ui/core'
 import {Add, Clear} from '@material-ui/icons';
 // import Layout from './src/components/Layout'
 import { ThemeProvider } from '@material-ui/styles';
@@ -52,8 +52,6 @@ const useStyles= makeStyles(theme =>({
   mainContainer: {
     height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`,
     overflowY: 'scroll',
-    // paddingLeft: `${theme.spacing(1)}px`,
-    // paddingTop: `${theme.spacing(1)}px`
   },
   halfBox: {
     maxWidth: `calc(100vw * 9/ 12 / 2 - ${theme.spacing(0)}px * 3)`,
@@ -61,14 +59,6 @@ const useStyles= makeStyles(theme =>({
     backgroundColor: theme.palette.background.paper,
   },
   halfBoxGrid: {
-    // "&:nth-child(odd)":{
-    //   borderRight: 'solid 1px #e0e0e0',
-    //   borderBottom: 'solid 1px #e0e0e0',
-    //   borderLeft: 'solid 1px #e0e0e0',
-    // },
-    // "&:nth-child(even)":{
-    //   borderBottom: 'solid 1px #e0e0e0'
-    // },
     boxShadow:'1px 1px 2px 0px rgba(0,0,0,0.08)'
   },
   fullWidthBox: {
@@ -91,18 +81,17 @@ const store = createStore(reducer)
 const App =() =>{
   const classes = useStyles()
   
-  // const [display, setDisplay] = useState({
-  //   'LV': {size:'full'}
-  // });
   const [PVpropTypes, setPVpropTypes] = useState({
-    'LV': {name: 'Left Ventricle', selected: true},
-    'RV': {name: 'Right Ventricle', selected: true},
+    'RA': {name: 'Right Atrium', selected: false},
     'LA': {name: 'Left Atrium', selected: true},
-    'RA': {name: 'Right Atrium', selected: true},
+    'RV': {name: 'Right Ventricle', selected: false},
+    'LV': {name: 'Left Ventricle', selected: true},
   });
   const [propTypes, setPropTypes] = useState({
     'Imv': { name: 'Mitral Valve Flow', selected: true},
-    'Iasp': { name: 'Aortic Valve Flow', selected: false}
+    'Iasp': { name: 'Aortic Valve Flow', selected: false},
+    'Itv': { name: 'Tricuspid Valve Flow', selected: false},
+    'Iapp': { name: 'Pulmonary Valve Flow', selected: false}
   });
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -124,22 +113,7 @@ const App =() =>{
               open={Boolean(anchorEl)}
               onClose={()=>setAnchorEl(null)}
             >
-            {Object.keys(propTypes).map(key =>{
-              const clickHandler = e=>{
-                e.preventDefault();
-                setPropTypes(propTypes=>{
-                  const newPropTypes = {...propTypes}
-                  newPropTypes[key].selected = !propTypes[key].selected 
-                  return newPropTypes
-                })
-              }
-              return (
-                <MenuItem key={key} onClick={clickHandler}>
-                  <Checkbox checked ={propTypes[key].selected}></Checkbox>
-                  <ListItemText>{propTypes[key].name}</ListItemText>
-                </MenuItem>
-                )
-            })}
+            <ListSubheader>PV Loop</ListSubheader>
             {Object.keys(PVpropTypes).map(key =>{
               const clickHandler = e=>{
                 e.preventDefault();
@@ -151,11 +125,29 @@ const App =() =>{
               }
               return (
                 <MenuItem key={key} onClick={clickHandler}>
-                  <Checkbox checked ={PVpropTypes[key].selected}></Checkbox>
+                  <Checkbox checked ={PVpropTypes[key].selected} color='primary'></Checkbox>
                   <ListItemText>{PVpropTypes[key].name}</ListItemText>
                 </MenuItem>
                 )
             })}
+            <Divider/>
+            <ListSubheader>Flow</ListSubheader>
+            {Object.keys(propTypes).map(key =>{
+              const clickHandler = e=>{
+                e.preventDefault();
+                setPropTypes(propTypes=>{
+                  const newPropTypes = {...propTypes}
+                  newPropTypes[key].selected = !propTypes[key].selected 
+                  return newPropTypes
+                })
+              }
+              return (
+                <MenuItem key={key} onClick={clickHandler}>
+                  <Checkbox checked ={propTypes[key].selected} color='primary'></Checkbox>
+                  <ListItemText>{propTypes[key].name}</ListItemText>
+                </MenuItem>
+                )
+            })}            
             </Menu>
     
           </Toolbar>
@@ -168,7 +160,7 @@ const App =() =>{
                 <PropsController/>
               </Box>
             </Grid>
-            <Grid item container xs={9} className={classes.mainContainer} >
+            <Grid item xs={9} className={classes.mainContainer} >
               <Box>
                 <Grid container spacing={1} style={{width: `calc(100% + 4px)`, marginBottom:'4px'}}>
                   { 
@@ -195,14 +187,30 @@ const App =() =>{
                       )}
                     }
                   )}
-                </Grid>
-                <Grid container>
-                  <Grid item xs={12}>
-                    <Box className={classes.fullWidthBox}  px={2} pt={2} pb ={-1} position='relative' >
-                      <Box  lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={80}><Typography variant ='h6'>MVF</Typography></Box>
-                      <PlotFlow name='Imv'/>
-                    </Box>
-                  </Grid>                                              
+                  { 
+                    Object.keys(propTypes).map((key,index) => {
+                    if(!propTypes[key].selected){
+                      return null
+                    }else{
+                      return (
+                      <Grid item xs={12} key={key}>
+                        <Box className={classes.fullWidthBox} px ={2} pt={2} pb={-1} position='relative' >
+                          <Box lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={70} top={3}><Typography variant ='h6'>{propTypes[key].name}</Typography></Box>
+                          <Box color="text.secondary" position='absolute' zIndex={3} right={10} top={5} >
+                            <Clear fontSize='small' aria-controls="simple-menu" aria-haspopup="true"  style={{cursor: 'pointer'}}
+                                onClick={()=>{setPropTypes(propTypes=>{
+                                  const newPropTypes = {...propTypes}
+                                  newPropTypes[key].selected = false
+                                  return newPropTypes
+                                })}}
+                            />
+                          </Box>
+                          <PlotFlow name={key}/>
+                        </Box>
+                      </Grid>
+                      )}
+                    }
+                  )}                                                             
                 </Grid>
               </Box>
             </Grid>

@@ -26,14 +26,17 @@ const Engine = props =>{
   const isTiming = (hemodynamicProp) => {
     const cvProps = state.hemodynamicProps
     const maybeChamber =  hemodynamicProp.slice(0,2)
-    const chamber = ['LV','LA','RA','RV'].includes(maybeChamber) ?  maybeChamber : 'LV'
+    let chamber = ['LV','LA','RA','RV'].includes(maybeChamber) ?  maybeChamber : 'LV'
+    if(hemodynamicProp === 'HR'){
+      chamber = 'LA'
+    }
     const [Tmax_,tau_,AV_delay_]  = ['Tmax', 'tau', 'AV_delay'].map(x=>chamber+'_'+x)
     const [Tmax,tau,AV_delay, HR] = [cvProps[Tmax_], cvProps[tau_], cvProps[AV_delay_], cvProps['HR']]
     const Timing = mutationTimings[hemodynamicProp]
     return t =>{
       switch (Timing){
         case 'EndDiastolic':
-          return e(t-AV_delay,Tmax,tau,HR) < 0.001
+          return e(t-AV_delay,Tmax,tau,HR) < 0.01
         case 'EndSystolic':
           return e(t-AV_delay,Tmax,tau,HR) > 0.99
         default:
@@ -66,7 +69,23 @@ const Engine = props =>{
     })
     if(state.hemodynamicPropsMutations.length !== 0){
       const propMutation = state.hemodynamicPropsMutations[0]
-      if(isTiming(Object.keys(propMutation)[0])(time)){
+      const propKey = Object.keys(propMutation)[0]
+      if(propKey==='Volume'){
+        console.log('Hey! find it!')
+        let [Qvs, ...rest]  = data
+        Qvs +=  propMutation[propKey] - data.reduce((a,x)=>a+=x,0)
+        dispatch({
+          type: UPDATE_SERIES,
+          data: [Qvs, ...rest],
+          time,
+          logger: []
+        })
+        dispatch({
+          type: ShIFT_PROP_MUTATION
+        })
+        deactivateCallbacks(mainCallback)  
+      }
+      if(isTiming(propKey)(time)){
         dispatch({
             type: UPDATE_PROPS,
             propsUpdated: propMutation,

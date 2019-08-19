@@ -1,9 +1,14 @@
 export const e = (t, Tmax, tau, HR)=>{
   const t_ = t % (60000/HR)
-  if(t_ < 3*Tmax/2){
-    return (Math.sin(Math.PI * t_/Tmax- Math.PI/2)+1)/2
+  if(t_ < Tmax){
+    const base = Math.exp(-(60000/HR-3*Tmax/2)/tau)/2
+    return (Math.sin(Math.PI * t_/Tmax- Math.PI/2)+1)/2 *(1-base) + base
   }else{
-    return Math.exp(-(t_-3*Tmax/2)/tau)/2
+    if(t_ < 3*Tmax/2){
+      return (Math.sin(Math.PI * t_/Tmax- Math.PI/2)+1)/2 
+    }else{
+      return Math.exp(-(t_-3*Tmax/2)/tau)/2
+    }
   }
 }
 
