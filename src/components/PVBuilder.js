@@ -1,8 +1,11 @@
 import React,{useEffect,useState,useRef} from 'react';
 import {getMax, zip_cols} from '../utils/utils'
+import {Box} from '@material-ui/core'
+
 
 import '../../node_modules/react-vis/dist/style.css';
 import {FlexibleXYPlot, LineSeries,MarkSeries, XAxis,YAxis} from 'react-vis';
+import PVBuilderAxis from './PVBuilderAxis'
 
 import {
   useTrackedState,
@@ -99,14 +102,16 @@ export default (props) => {
 
    if(trajectory.length > 2){
      return (
-      <FlexibleXYPlot xDomain={[0,limsRef.current[0]]} yDomain={[0,limsRef.current[1]]}> 
-        <XAxis/>
-        <YAxis/>
-        <LineSeries data={trajectory} />
-        <LineSeries data ={ESPVR_Ref.current} strokeStyle='dashed' opacity={0.5} color='gray'/>
-        <LineSeries data ={EDPVR_Ref.current} strokeStyle='dashed' opacity={0.5} color='gray'/>      
-        <MarkSeries data={[{...trajectory[trajectory.length-1], size: 3},{...trajectory[0], size: 10, opacity:0},{...trajectory[0], size: 0, opacity:0}]}/>
-      </FlexibleXYPlot>
+      <Box position ='relative' width={1} height={1}>
+        <PVBuilderAxis lims={limsRef.current} ESPVR={ESPVR_Ref.current} EDPVR={EDPVR_Ref.current} />
+        <Box position='absolute'  width={1} height={1}>
+          <FlexibleXYPlot xDomain={[0,limsRef.current[0]]} yDomain={[0,limsRef.current[1]]}> 
+            <LineSeries data= {trajectory} />
+            <MarkSeries data={[{...trajectory[trajectory.length-1], size: 3},{...trajectory[0], size: 10, opacity:0},{...trajectory[0], size: 0, opacity:0}]}/>
+          </FlexibleXYPlot>
+        </Box>
+      </Box>
+      
       )
      }else{
       return null
