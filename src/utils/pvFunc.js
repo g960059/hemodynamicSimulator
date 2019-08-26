@@ -15,7 +15,7 @@ export const e = (t, Tmax, tau, HR)=>{
 // use memo
 
 export const P = (V, t,Ees,V0, alpha, beta,Tmax, tau, AV_delay,HR)=>{
-  const Ped = beta * (Math.exp(alpha*(V-V0))-1)
+  const Ped = beta * (Math.exp(alpha*(V-V0))-1) 
   const Pes = Ees * (V-V0)
   return Ped + e(t-AV_delay,Tmax,tau,HR)*(Pes-Ped)
 }
@@ -32,6 +32,7 @@ const pvFunc = (t,[Qvs, Qas, Qap, Qvp, Qlv, Qla, Qrv, Qra, Qas_prox,Qap_prox],
     const Pla = P(Qla,t, LA_Ees, LA_V0, LA_alpha, LA_beta, LA_Tmax, LA_tau, LA_AV_delay, HR)
     const Prv = P(Qrv,t, RV_Ees, RV_V0, RV_alpha, RV_beta, RV_Tmax, RV_tau, RV_AV_delay, HR)
     const Pra = P(Qra,t, RA_Ees, RA_V0, RA_alpha, RA_beta, RA_Tmax, RA_tau, RA_AV_delay, HR)
+
     let Ias = (Qas/Cas-Qvs/Cvs)/Ras
     let Ics = (Qas_prox/Cas_prox-Qas/Cas)/Rcs  
     let Imv = (Pla-Plv)/Rmv
@@ -41,7 +42,7 @@ const pvFunc = (t,[Qvs, Qas, Qap, Qvp, Qlv, Qla, Qrv, Qra, Qas_prox,Qap_prox],
     let Itv = (Pra-Prv)/Rtv
     let Ivs = (Qvs/Cvs-Pra)/Rvs
     let Iasp =(Plv-Qas_prox/Cas_prox)/Ras_prox
-    let Iapp =(Prv-Qap_prox/Cap_prox)/Rap_prox
+    let Iapp =(Prv-Qap_prox/Cap_prox)/Rap_prox    
     
     if(Iasp < 0){
       Iasp = 0

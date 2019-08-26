@@ -62,7 +62,7 @@ const useStyles= makeStyles(theme =>({
     boxShadow:'1px 1px 2px 0px rgba(0,0,0,0.08)'
   },
   fullWidthBox: {
-    maxWidth: `calc(100vw * 9/ 12  - ${theme.spacing(0)}px)`,
+    // maxWidth: `calc(100vw * 9/ 12  - ${theme.spacing(0)}px)`,
     height: `calc((100vw * 9/ 12 / 2 - ${theme.spacing(5)}px) / 2)`,
     backgroundColor: theme.palette.background.paper,
     boxShadow:'1px 1px 2px 0px rgba(0,0,0,0.08)',
@@ -83,15 +83,22 @@ const App =() =>{
   
   const [PVpropTypes, setPVpropTypes] = useState({
     'RA': {name: 'Right Atrium', selected: false},
-    'LA': {name: 'Left Atrium', selected: true},
+    'LA': {name: 'Left Atrium', selected: false},
     'RV': {name: 'Right Ventricle', selected: false},
     'LV': {name: 'Left Ventricle', selected: true},
   });
   const [propTypes, setPropTypes] = useState({
-    'Imv': { name: 'Mitral Valve Flow', selected: true},
-    'Iasp': { name: 'Aortic Valve Flow', selected: false},
-    'Itv': { name: 'Tricuspid Valve Flow', selected: false},
-    'Iapp': { name: 'Pulmonary Valve Flow', selected: false}
+    'Imv': { name: 'Mitral Valve Flow', selected: false, divider: null},
+    'Iasp': { name: 'Aortic Valve Flow', selected: false, divider: null},
+    'Itv': { name: 'Tricuspid Valve Flow', selected: false, divider: null},
+    'Iapp': { name: 'Pulmonary Valve Flow', selected: false, divider: null},
+    'Qas_prox': { name: 'Aorta', selected: false, divider: 'Cas_prox'},
+    'Qap_prox': { name: 'Pulmonary Artery', selected: false, divider: 'Cap_prox'},
+    'Qvs': { name: 'Venous Volume', selected: true, divider: null},
+    'Plv': { name: 'Left Ventricle', selected: false, divider: null},
+    'Pla': { name: 'Left Atrium', selected: false, divider: null},
+    'Prv': { name: 'Right Ventricle', selected: false, divider: null},
+    'Prv': { name: 'Right Artrium', selected: false, divider: null},
   });
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -132,7 +139,7 @@ const App =() =>{
             })}
             <Divider/>
             <ListSubheader>Flow</ListSubheader>
-            {Object.keys(propTypes).map(key =>{
+            {Object.keys(propTypes).slice(0,4).map(key =>{
               const clickHandler = e=>{
                 e.preventDefault();
                 setPropTypes(propTypes=>{
@@ -147,7 +154,25 @@ const App =() =>{
                   <ListItemText>{propTypes[key].name}</ListItemText>
                 </MenuItem>
                 )
-            })}            
+            })} 
+            <Divider/>
+            <ListSubheader>Pressure</ListSubheader>
+            {Object.keys(propTypes).slice(4).map(key =>{
+              const clickHandler = e=>{
+                e.preventDefault();
+                setPropTypes(propTypes=>{
+                  const newPropTypes = {...propTypes}
+                  newPropTypes[key].selected = !propTypes[key].selected 
+                  return newPropTypes
+                })
+              }
+              return (
+                <MenuItem key={key} onClick={clickHandler}>
+                  <Checkbox checked ={propTypes[key].selected} color='primary'></Checkbox>
+                  <ListItemText>{propTypes[key].name}</ListItemText>
+                </MenuItem>
+                )
+            })}                         
             </Menu>
     
           </Toolbar>
@@ -194,9 +219,9 @@ const App =() =>{
                     }else{
                       return (
                       <Grid item xs={12} key={key}>
-                        <Box className={classes.fullWidthBox} px ={2} pt={2} pb={-1} position='relative' >
+                        <Box className={classes.fullWidthBox} mr={-1} px ={2} pt={2} pb={-1} position='relative' >
                           <Box lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={70} top={3}><Typography variant ='h6'>{propTypes[key].name}</Typography></Box>
-                          <Box color="text.secondary" position='absolute' zIndex={3} right={10} top={5} >
+                          <Box color="text.secondary" position='absolute' zIndex={3} right={15} top={5} >
                             <Clear fontSize='small' aria-controls="simple-menu" aria-haspopup="true"  style={{cursor: 'pointer'}}
                                 onClick={()=>{setPropTypes(propTypes=>{
                                   const newPropTypes = {...propTypes}
@@ -205,7 +230,7 @@ const App =() =>{
                                 })}}
                             />
                           </Box>
-                          <PlotFlow name={key}/>
+                          <PlotFlow name={key} divider={propTypes[key].divider}/>
                         </Box>
                       </Grid>
                       )}

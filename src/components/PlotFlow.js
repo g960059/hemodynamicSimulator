@@ -1,6 +1,6 @@
 import React,{useEffect, useState,useRef} from 'react';
 import {Box} from '@material-ui/core'
-// import {zip_cols} from '../utils/utils'
+import {getMinMaxY, extractTimeSereis, extractTimeSereisDivider} from '../utils/utils'
 // import {u_P} from '../utils/pvFunc'
 
 import '../../node_modules/react-vis/dist/style.css';
@@ -14,18 +14,6 @@ import PlowFlowAxis from './PlotFlowAxis'
 
 const time_range = 4000
 const initial_time = 3103.4394
-
-const extract_time_col = (matrix,y_index)=>{
-  const ml = matrix.length
-  const res = new Array(ml)
-  for(let i=0; i<ml; i++){
-    res[i] = {
-      x: matrix[i]['t'] - initial_time,
-      y: matrix[i][y_index]
-    }
-  }
-  return res
-}
 
 const slice_trajectory = (trajectory_data, time, time_range = 4000) =>{
   const time_ = time - initial_time
@@ -75,19 +63,41 @@ const transformTrajectory = (trajectory, time,time_range=4000) =>{
 
 export default (props) => {
   const state = useTrackedState();
+  const cv_props = state.hemodynamicProps
   const [trajectory, setTrajectory] = useState([]);
   const trajectoryLines = useRef([[],[]])
-  const limsRef = useRef([0,4000])
+  const xlimsRef = useRef([0,4000])
+  const ylimsRef = useRef([0,0])
 
   useEffect(() => {
     const {data,time,logger} = state.hemodynamicSeries
     if(logger.length > 0){
       setTrajectory(trajectory =>{
-        let newData = extract_time_col(logger,props.name)
+        let newData
+        if(props.divider == null){
+          newData = extractTimeSereis(logger,props.name, initial_time)
+        }else{
+          newData = extractTimeSereisDivider(logger,props.name, initial_time, cv_props[props.divider])
+        }
         let newTrajectory = trajectory.concat(newData)
         const res = slice_trajectory(newTrajectory,time,time_range)
+
+        let [yMin,yMax] = getMinMaxY(res)
+        if(yMin >= 0){ 
+          yMin = 0
+        }else{
+          yMin = Math.floor((yMin*1.2)/0.1+1)*0.1
+        }
+        yMax = Math.floor((yMax*1.2/0.1)+1)*0.1
+        if(yMin != ylimsRef.current[0] || yMax !=  ylimsRef.current[1]){
+          ylimsRef.current=[yMin, yMax]
+        }
+
         trajectoryLines.current = transformTrajectory(res,time,time_range)[0]
-        limsRef.current = transformTrajectory(res,time,time_range)[1]
+        const newXLims= transformTrajectory(res,time,time_range)[1]
+        if (newXLims[1] != xlimsRef.current[1]){
+          xlimsRef.current = newXLims
+        }
         return res
       })
     }
@@ -97,11 +107,9 @@ export default (props) => {
 
   return (
     <Box position ='relative' width={1} height={1}>
-      <PlowFlowAxis lims = {limsRef.current}/>
+      <PlowFlowAxis xlims = {xlimsRef.current} ylims={ylimsRef.current}/>
       <Box position='absolute'  width={1} height={1}>
-        <FlexibleXYPlot xDomain={limsRef.current}> 
-          {/* <XAxis/> */}
-          {/* <YAxis/> */}
+        <FlexibleXYPlot xDomain={xlimsRef.current}> 
           <LineSeries data={trajectoryLines.current[0]} color="#12939a"/>    
           <LineSeries data={trajectoryLines.current[1]} color="#12939a"/>          
         </FlexibleXYPlot>

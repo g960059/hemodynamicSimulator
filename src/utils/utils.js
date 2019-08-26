@@ -66,12 +66,45 @@ export const getMax = (data) => {
   return max
 }
 
+export const getMinMaxY = (data) => {
+  let i = data.length;
+  let yMin = 0;
+  let yMax = 0
+  while (i--) {
+    if (data[i].y > yMax) {yMax = data[i].y }
+    if (data[i].y < yMin) {yMin = data[i].y }
+  }
+  return [yMin,yMax]
+}
+
+export const extractTimeSereis = (matrix,y_index, initial_time = 3103.4394)=>{
+  const ml = matrix.length
+  const res = new Array(ml)
+  for(let i=0; i<ml; i++){
+    res[i] = {
+      x: matrix[i]['t'] - initial_time,
+      y: matrix[i][y_index]
+    }
+  }
+  return res
+}
+export const extractTimeSereisDivider = (matrix,y_index, initial_time = 3103.4394, divider)=>{
+  const ml = matrix.length
+  const res = new Array(ml)
+  for(let i=0; i<ml; i++){
+    res[i] = {
+      x: matrix[i]['t'] - initial_time,
+      y: matrix[i][y_index] / divider
+    }
+  }
+  return res
+}
+
 const get_series = (times,series,y_index=null,x_index=null) => {
   const x = x_index === null ? times:get_column(series,x_index)
   const y = get_column(series, y_index)
   return zip_series(x,y)
 }
-
 
 const PV_Loop = (chamber) =>{
   const model_props = useContext(ModelPropertyContext);
