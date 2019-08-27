@@ -24,5 +24,8 @@
     "@babel/core": "^7.4.5",
     "babel-plugin-emotion": "^10.0.14",
     "babel-plugin-transform-node-env-inline": "^0.4.3"
+  },
+  "scripts": {
+    "build": "parcel build .index.html"
   }
 }
