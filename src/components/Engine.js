@@ -36,9 +36,9 @@ const Engine = props =>{
     return t =>{
       switch (Timing){
         case 'EndDiastolic':
-          return e(t-AV_delay,Tmax,tau,HR) < 0.01
+          return e(t-AV_delay,Tmax,tau,HR) < 0.001
         case 'EndSystolic':
-          return e(t-AV_delay,Tmax,tau,HR) > 0.99
+          return e(t-AV_delay,Tmax,tau,HR) > 0.999
         default:
           return true
       }
@@ -71,7 +71,6 @@ const Engine = props =>{
       const propMutation = state.hemodynamicPropsMutations[0]
       const propKey = Object.keys(propMutation)[0]
       if(propKey==='Volume'){
-        console.log('Hey! find it!')
         let [Qvs, ...rest]  = data
         Qvs +=  propMutation[propKey] - data.reduce((a,x)=>a+=x,0)
         dispatch({

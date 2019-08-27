@@ -83,18 +83,17 @@ const App =() =>{
   
   const [PVpropTypes, setPVpropTypes] = useState({
     'RA': {name: 'Right Atrium', selected: false},
-    'LA': {name: 'Left Atrium', selected: false},
+    'LA': {name: 'Left Atrium', selected: true},
     'RV': {name: 'Right Ventricle', selected: false},
     'LV': {name: 'Left Ventricle', selected: true},
   });
   const [propTypes, setPropTypes] = useState({
-    'Imv': { name: 'Mitral Valve Flow', selected: false, divider: null},
+    'Imv': { name: 'Mitral Valve Flow', selected: true, divider: null},
     'Iasp': { name: 'Aortic Valve Flow', selected: false, divider: null},
     'Itv': { name: 'Tricuspid Valve Flow', selected: false, divider: null},
     'Iapp': { name: 'Pulmonary Valve Flow', selected: false, divider: null},
-    'Qas_prox': { name: 'Aorta', selected: false, divider: 'Cas_prox'},
+    'Qas_prox': { name: 'Aorta', selected: true, divider: 'Cas_prox'},
     'Qap_prox': { name: 'Pulmonary Artery', selected: false, divider: 'Cap_prox'},
-    'Qvs': { name: 'Venous Volume', selected: true, divider: null},
     'Plv': { name: 'Left Ventricle', selected: false, divider: null},
     'Pla': { name: 'Left Atrium', selected: false, divider: null},
     'Prv': { name: 'Right Ventricle', selected: false, divider: null},

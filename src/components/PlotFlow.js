@@ -71,13 +71,16 @@ export default (props) => {
 
   useEffect(() => {
     const {data,time,logger} = state.hemodynamicSeries
+    // logger.map(d=>{
+    //   console.log(d.Qas_prox)
+    // })
     if(logger.length > 0){
       setTrajectory(trajectory =>{
         let newData
         if(props.divider == null){
           newData = extractTimeSereis(logger,props.name, initial_time)
         }else{
-          newData = extractTimeSereisDivider(logger,props.name, initial_time, cv_props[props.divider])
+          newData = extractTimeSereisDivider(logger, props.name, initial_time, cv_props[props.divider])
         }
         let newTrajectory = trajectory.concat(newData)
         const res = slice_trajectory(newTrajectory,time,time_range)
@@ -109,7 +112,7 @@ export default (props) => {
     <Box position ='relative' width={1} height={1}>
       <PlowFlowAxis xlims = {xlimsRef.current} ylims={ylimsRef.current}/>
       <Box position='absolute'  width={1} height={1}>
-        <FlexibleXYPlot xDomain={xlimsRef.current}> 
+        <FlexibleXYPlot xDomain={xlimsRef.current} yDomain={ylimsRef.current}> 
           <LineSeries data={trajectoryLines.current[0]} color="#12939a"/>    
           <LineSeries data={trajectoryLines.current[1]} color="#12939a"/>          
         </FlexibleXYPlot>
