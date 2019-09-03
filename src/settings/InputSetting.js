@@ -129,7 +129,7 @@ const InputSetting = {
     min: 400, max: 4000, step: 10
   },
   HR: {
-    min: 30, max: 110, step: 1
+    min: 30, max: 150, step: 1
   }
 }
 

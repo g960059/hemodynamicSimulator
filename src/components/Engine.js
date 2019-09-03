@@ -23,6 +23,8 @@ const Engine = props =>{
   const activeCallbacks = useRef(new Set())
   const endLoopFunc = useRef(null)
   
+  const maxAVdelay  = useRef(160)
+
   const isTiming = (hemodynamicProp) => {
     const cvProps = state.hemodynamicProps
     const maybeChamber =  hemodynamicProp.slice(0,2)
@@ -39,6 +41,8 @@ const Engine = props =>{
           return e(t-AV_delay,Tmax,tau,HR) < 0.001
         case 'EndSystolic':
           return e(t-AV_delay,Tmax,tau,HR) > 0.999
+        case 'HR':
+          return t < maxAVdelay.current + 15
         default:
           return true
       }
@@ -51,13 +55,16 @@ const Engine = props =>{
       cancelAnimationFrame(rafId)
       deactivateCallbacks(mainCallback)
     }
+
     let delta = (timestamp -  prevTimestamp) * speed 
     const new_logger = []
     let flag = true
     while (delta > 0 ){
       let dt = delta >= 2 ? 2 : delta
-      data = flag ? rk(pv_func,state.hemodynamicProps,new_logger)(data,time,dt): rk(pv_func,state.hemodynamicProps,null)(data,time,dt)
+      time = time % (60000/state.hemodynamicProps.HR)
+      data = flag ? rk(pv_func,state.hemodynamicProps,new_logger)(data,time + maxAVdelay.current,dt): rk(pv_func,state.hemodynamicProps,null)(data,time + maxAVdelay.current,dt)
       time += dt
+      // time = (time-maxAVdelay.current) % (60000/state.hemodynamicProps.HR) + maxAVdelay.current
       delta -= dt
       flag = !flag
     }
@@ -139,6 +146,7 @@ const Engine = props =>{
   }
 
   useLayoutEffect(()=>{
+    maxAVdelay.current = Math.max(state.hemodynamicProps.LV_AV_delay, state.hemodynamicProps.LA_AV_delay, state.hemodynamicProps.RV_AV_delay, state.hemodynamicProps.RA_AV_delay)
     activateCallbacks(mainCallback)
     return ()=>deactivateCallbacks(mainCallback)
   }, [speed, state.hemodynamicPropsMutations])

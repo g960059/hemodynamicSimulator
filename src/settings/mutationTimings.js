@@ -19,6 +19,6 @@ const mutationTimings = {
   'RA_beta': 'EndSystolic',
   'RA_Tmax': 'EndDiastolic',
   'RA_tau': 'EndSystolic',
-  'HR': 'EndSystolic',
+  'HR': 'HR',
 }
 export default mutationTimings

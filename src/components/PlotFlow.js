@@ -68,6 +68,8 @@ export default (props) => {
   const trajectoryLines = useRef([[],[]])
   const xlimsRef = useRef([0,4000])
   const ylimsRef = useRef([0,0])
+  const accTime = useRef(0)
+  const lastLogTime = useRef(0)
 
   useEffect(() => {
     const {data,time,logger} = state.hemodynamicSeries
@@ -78,11 +80,20 @@ export default (props) => {
       setTrajectory(trajectory =>{
         let newData
         if(props.divider == null){
-          newData = extractTimeSereis(logger,props.name, initial_time)
+          newData = extractTimeSereis(logger,props.name, lastLogTime.current, accTime.current, 60000/state.hemodynamicProps.HR)
         }else{
           newData = extractTimeSereisDivider(logger, props.name, initial_time, cv_props[props.divider])
         }
+        let timeDif = logger[logger.length-1]['t'] - lastLogTime.current
+        if(timeDif > 0){
+          accTime.current += timeDif
+        }
+        lastLogTime.current = logger[logger.length-1]['t']
+        console.log(newData)
         let newTrajectory = trajectory.concat(newData)
+        if(accTime.current > 4000){
+          accTime.current = 0
+        }
         const res = slice_trajectory(newTrajectory,time,time_range)
 
         let [yMin,yMax] = getMinMaxY(res)
@@ -101,7 +112,7 @@ export default (props) => {
         if (newXLims[1] != xlimsRef.current[1]){
           xlimsRef.current = newXLims
         }
-        return res
+        return newTrajectory
       })
     }
   }, [state.hemodynamicSeries]);
@@ -110,9 +121,9 @@ export default (props) => {
 
   return (
     <Box position ='relative' width={1} height={1}>
-      <PlowFlowAxis xlims = {xlimsRef.current} ylims={ylimsRef.current}/>
+      {/* <PlowFlowAxis xlims = {xlimsRef.current} ylims={ylimsRef.current}/> */}
       <Box position='absolute'  width={1} height={1}>
-        <FlexibleXYPlot xDomain={xlimsRef.current} yDomain={ylimsRef.current}> 
+        <FlexibleXYPlot > 
           <LineSeries data={trajectoryLines.current[0]} color="#12939a"/>    
           <LineSeries data={trajectoryLines.current[1]} color="#12939a"/>          
         </FlexibleXYPlot>
