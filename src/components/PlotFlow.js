@@ -15,58 +15,82 @@ import PlowFlowAxis from './PlotFlowAxis'
 const time_range = 4000
 const initial_time = 3103.4394
 
-const slice_trajectory = (trajectory_data, time, time_range = 4000) =>{
-  const time_ = time - initial_time
-  if(trajectory_data.length < 1){
-    return trajectory_data
-  }
-  if(trajectory_data[0]['x']>=time_-time_range){
-    return trajectory_data
+// last = 5200 -> 1200  4000 -> 5200, 3200->4000, 
+
+const slice_trajectory = (trajectory, time_range = 4000) =>{
+  const last_time = trajectory[trajectory.length-1]['x']
+  const split_time = last_time - last_time % time_range
+  const start_time = last_time - time_range
+
+
+  if(trajectory.length < 1 || last_time <= time_range){
+    return [trajectory, trajectory, []]
   }else{
-    let sliceInd  = 0
-    const tl = trajectory_data.length
+    const firstArray = []
+    const secondArray = []
+    let startInd  = null
+    const tl = trajectory.length
     for(let i=0;i<tl;i++){
-      if(trajectory_data[i]['x'] > time_-time_range){
-        sliceInd = i
-        break
+      if(startInd == null){
+        if(trajectory[i]['x'] > start_time){
+          startInd = i
+        }
+      }
+      if(start_time+200 < trajectory[i]['x'] && trajectory[i]['x'] <= split_time){
+        firstArray.push(
+          {
+            x:trajectory[i]['x'] % time_range, 
+            y:trajectory[i]['y']
+          }
+        )
+      }
+      if(split_time < trajectory[i]['x'] ){
+        secondArray.push(
+          {
+            x:trajectory[i]['x'] % time_range, 
+            y:trajectory[i]['y']            
+          }
+        )
       }
     }
-    return trajectory_data.slice(sliceInd)
+    return [trajectory.slice(startInd), firstArray, secondArray]
   }
 }
 
-const transformTrajectory = (trajectory, time,time_range=4000) =>{
-  const time_ = time - initial_time
-  if(trajectory.length < 1){
-    return  [[trajectory,[]], [0, time_range]]
-  }
-  const tl = trajectory.length
-  const quotient = Math.floor(time_/time_range)
-  if(trajectory[0]['x'] > quotient * time_range){
-    return [[trajectory,[]],[quotient * time_range,(quotient+1) * time_range]]
-  }
-  const frontArray = []
-  let endInd  = 0
-  let flag = false
-  for(let i=0;i<tl;i++){
-    if(trajectory[i]['x'] > quotient * time_range){
-      if(! flag){
-        endInd = i
-        flag = true
-      }
-      frontArray.push({x:trajectory[i]['x']-time_range, y:trajectory[i]['y']})
-    }
-  }
-  return [[frontArray, trajectory.slice(10,endInd)],[(quotient-1) * time_range,(quotient) * time_range]]
-}
+// const transformTrajectory = (trajectory, time,time_range=4000) =>{
+//   const time_ = time - initial_time
+//   if(trajectory.length < 1){
+//     return  [[trajectory,[]], [0, time_range]]
+//   }
+//   const tl = trajectory.length
+//   const quotient = Math.floor(time_/time_range)
+//   if(trajectory[0]['x'] > quotient * time_range){
+//     return [[trajectory,[]],[quotient * time_range,(quotient+1) * time_range]]
+//   }
+//   const frontArray = []
+//   let endInd  = 0
+//   let flag = false
+//   for(let i=0;i<tl;i++){
+//     if(trajectory[i]['x'] > quotient * time_range){
+//       if(! flag){
+//         endInd = i
+//         flag = true
+//       }
+//       frontArray.push({x:trajectory[i]['x']-time_range, y:trajectory[i]['y']})
+//     }
+//   }
+//   return [[frontArray, trajectory.slice(10,endInd)],[(quotient-1) * time_range,(quotient) * time_range]]
+// }
 
 
 export default (props) => {
   const state = useTrackedState();
   const cv_props = state.hemodynamicProps
   const [trajectory, setTrajectory] = useState([]);
-  const trajectoryLines = useRef([[],[]])
-  const xlimsRef = useRef([0,4000])
+  // const trajectoryLines = useRef([[],[]])
+  const firstArray = useRef([])
+  const secondArray = useRef([])
+  const xlimsRef = useRef([0, time_range])
   const ylimsRef = useRef([0,0])
   const accTime = useRef(0)
   const lastLogTime = useRef(0)
@@ -82,19 +106,16 @@ export default (props) => {
         if(props.divider == null){
           newData = extractTimeSereis(logger,props.name, lastLogTime.current, accTime.current, 60000/state.hemodynamicProps.HR)
         }else{
-          newData = extractTimeSereisDivider(logger, props.name, initial_time, cv_props[props.divider])
+          newData = extractTimeSereisDivider(logger, props.name, cv_props[props.divider],lastLogTime.current,  accTime.current, 60000/state.hemodynamicProps.HR)
         }
         let timeDif = logger[logger.length-1]['t'] - lastLogTime.current
         if(timeDif > 0){
           accTime.current += timeDif
         }
         lastLogTime.current = logger[logger.length-1]['t']
-        console.log(newData)
         let newTrajectory = trajectory.concat(newData)
-        if(accTime.current > 4000){
-          accTime.current = 0
-        }
-        const res = slice_trajectory(newTrajectory,time,time_range)
+        let res
+        [res, firstArray.current, secondArray.current] = slice_trajectory(newTrajectory,time_range)
 
         let [yMin,yMax] = getMinMaxY(res)
         if(yMin >= 0){ 
@@ -104,15 +125,16 @@ export default (props) => {
         }
         yMax = Math.floor((yMax*1.2/0.1)+1)*0.1
         if(yMin != ylimsRef.current[0] || yMax !=  ylimsRef.current[1]){
+          console.log('hey')
           ylimsRef.current=[yMin, yMax]
         }
 
-        trajectoryLines.current = transformTrajectory(res,time,time_range)[0]
-        const newXLims= transformTrajectory(res,time,time_range)[1]
-        if (newXLims[1] != xlimsRef.current[1]){
-          xlimsRef.current = newXLims
-        }
-        return newTrajectory
+        // trajectoryLines.current = transformTrajectory(res,time,time_range)[0]
+        // const newXLims= transformTrajectory(res,time,time_range)[1]
+        // if (newXLims[1] != xlimsRef.current[1]){
+        //   xlimsRef.current = newXLims
+        // }
+        return res
       })
     }
   }, [state.hemodynamicSeries]);
@@ -121,11 +143,11 @@ export default (props) => {
 
   return (
     <Box position ='relative' width={1} height={1}>
-      {/* <PlowFlowAxis xlims = {xlimsRef.current} ylims={ylimsRef.current}/> */}
+      <PlowFlowAxis xlims = {xlimsRef.current} ylims={ylimsRef.current}/>
       <Box position='absolute'  width={1} height={1}>
-        <FlexibleXYPlot > 
-          <LineSeries data={trajectoryLines.current[0]} color="#12939a"/>    
-          <LineSeries data={trajectoryLines.current[1]} color="#12939a"/>          
+        <FlexibleXYPlot xDomain={xlimsRef.current} yDomain={ylimsRef.current}> 
+          <LineSeries data={firstArray.current} color="#12939a"/>    
+          <LineSeries data={secondArray.current} color="#12939a"/>          
         </FlexibleXYPlot>
       </Box>
     </Box>

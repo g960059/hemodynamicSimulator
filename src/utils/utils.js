@@ -92,17 +92,23 @@ export const extractTimeSereis = (matrix,y_index,  last_log_time, acc_time, stro
         y: matrix[i][y_index]
       }      
     }
-
   }
   return res
 }
-export const extractTimeSereisDivider = (matrix,y_index, initial_time = 3103.4394, divider)=>{
+export const extractTimeSereisDivider = (matrix,y_index, divider,last_log_time, acc_time, strokeTime)=>{
   const ml = matrix.length
   const res = new Array(ml)
   for(let i=0; i<ml; i++){
-    res[i] = {
-      x: matrix[i]['t'] - initial_time,
-      y: matrix[i][y_index] / divider
+    if(matrix[i]['t'] - last_log_time > 0){
+      res[i] = {
+        x: matrix[i]['t'] - last_log_time + acc_time,
+        y: matrix[i][y_index] / divider
+      }
+    }else{
+      res[i] = {
+        x: matrix[i]['t'] - last_log_time + acc_time + strokeTime,
+        y: matrix[i][y_index] / divider
+      }      
     }
   }
   return res

@@ -92,7 +92,7 @@ const App =() =>{
     'Iasp': { name: 'Aortic Valve Flow', selected: false, divider: null},
     'Itv': { name: 'Tricuspid Valve Flow', selected: false, divider: null},
     'Iapp': { name: 'Pulmonary Valve Flow', selected: false, divider: null},
-    'Qas_prox': { name: 'Aorta', selected: true, divider: 'Cas_prox'},
+    'Qas_prox': { name: 'Aorta', selected: false, divider: 'Cas_prox'},
     'Qap_prox': { name: 'Pulmonary Artery', selected: false, divider: 'Cap_prox'},
     'Plv': { name: 'Left Ventricle', selected: false, divider: null},
     'Pla': { name: 'Left Atrium', selected: false, divider: null},
