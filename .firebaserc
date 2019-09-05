@@ -1,6 +1,5 @@
 {
   "projects": {
-    "default": "hemodynamicsimulator",
-    "staging": "hemodynamicsimulator"
+    "default": "hemodynamicsimulator"
   }
 }
