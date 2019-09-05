@@ -37,20 +37,42 @@ const slice_trajectory = (trajectory, time_range = 4000) =>{
         }
       }
       if(start_time+200 < trajectory[i]['x'] && trajectory[i]['x'] <= split_time){
-        firstArray.push(
-          {
-            x:trajectory[i]['x'] % time_range, 
-            y:trajectory[i]['y']
+        if(i+2< trajectory.length){
+          if(trajectory[i]['y'] != trajectory[i+1]['y'] || trajectory[i+1]['y'] != trajectory[i+2]['y']){
+            firstArray.push(
+              {
+                x:trajectory[i]['x'] % time_range, 
+                y:trajectory[i]['y']
+              }
+            )
           }
-        )
+        }else{
+          firstArray.push(
+            {
+              x:trajectory[i]['x'] % time_range, 
+              y:trajectory[i]['y']
+            }
+          )          
+        }
       }
       if(split_time < trajectory[i]['x'] ){
-        secondArray.push(
-          {
-            x:trajectory[i]['x'] % time_range, 
-            y:trajectory[i]['y']            
+        if(i+2< trajectory.length){
+          if(trajectory[i]['y'] != trajectory[i+1]['y'] || trajectory[i+1]['y'] != trajectory[i+2]['y']){
+            secondArray.push(
+              {
+                x:trajectory[i]['x'] % time_range, 
+                y:trajectory[i]['y']
+              }
+            )
           }
-        )
+        }else{
+          secondArray.push(
+            {
+              x:trajectory[i]['x'] % time_range, 
+              y:trajectory[i]['y']
+            }
+          )          
+        }
       }
     }
     return [trajectory.slice(startInd), firstArray, secondArray]
