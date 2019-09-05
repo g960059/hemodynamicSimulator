@@ -2,7 +2,18 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/node:latest
+      - image: circleci/node
     steps:
       - checkout
-      - run: echo "hello world"
+      - restore_cache:
+          keys:
+              - v1-dependencies-{{ checksum "package.json" }}
+              - v1-dependencies-
+      - run: yarn install   
+      - run: yarn add parcel-bundler firebase-tools --dev
+      - save_cache:
+          paths:
+              - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}    
+      - run: parcel build index.html
+      - run: ./node_modules/.bin/firebase deploy --token "1/Rw1Ed3X-D2gpdL_0lA9LYhw_qTl4QMW-6xmFdwLRSyk"
