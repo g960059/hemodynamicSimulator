@@ -44,14 +44,14 @@ export default React.memo((props) => {
 
   return (
     <>
-      <ExpansionPanel classes={{expanded: classes.expanded}}>
+      <ExpansionPanel classes={{expanded: classes.expanded}} defaultExpanded={true}>
         <ExpansionPanelSummary expandIcon={<ExpandMore/>} >
           <Typography variant='h6'>Chamber</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails style={{paddingRight:0, paddingLeft:0}}>
           <Box width={1} px={1}>
-            <FormControl>
-              <InputLabel htmlFor='chamber-select'>Chamber</InputLabel> 
+            <FormControl fullWidth={true} style={{marginTop:'-20px', paddingBottom:'15px'}}>
+              {/* <InputLabel htmlFor='chamber-select'>Chamber</InputLabel>  */}
               <Select value={values.chamber} onChange={handleChange} inputProps={{name:'chamber',id:'chamber-select'}}>
                 <MenuItem value={'LV'}>Left Ventricle</MenuItem>
                 <MenuItem value={'LA'}>Left Atrium</MenuItem>
@@ -67,14 +67,14 @@ export default React.memo((props) => {
           </Box>    
         </ExpansionPanelDetails>
       </ExpansionPanel>
-      <ExpansionPanel  classes={{expanded: classes.expanded}}>
+      <ExpansionPanel  classes={{expanded: classes.expanded}} defaultExpanded={true}>
         <ExpansionPanelSummary expandIcon={<ExpandMore/>} >
           <Typography variant='h6'>Vessels</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails style={{paddingRight:0, paddingLeft:0}}>
           <Box width={1} px={1}>
-            <FormControl>
-              <InputLabel htmlFor='vessel-select'>Vessel</InputLabel> 
+            <FormControl  fullWidth={true} style={{marginTop:'-20px', paddingBottom:'15px'}}>
+              {/* <InputLabel htmlFor='vessel-select'>Vessel</InputLabel>  */}
               <Select value={values.vessel} onChange={handleChange} inputProps={{name:'vessel',id:'vessel-select'}}>
                 <MenuItem value={'s'}>Systemic</MenuItem>
                 <MenuItem value={'p'}>Pulmonary</MenuItem>
