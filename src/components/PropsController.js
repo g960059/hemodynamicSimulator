@@ -107,12 +107,12 @@ export default React.memo((props) => {
               )
             })}
           </Box>  
-          <Divider/>
         </ExpansionPanelDetails>
       </ExpansionPanel>
+      <Divider light />
       <ExpansionPanel  classes={{root:classes.expansionPanel, expanded: classes.expanded}}>
         <ExpansionPanelDetails className={classes.expansionPanelDetail}>
-          <Box width={1} px={1}>
+          <Box width={1} px={1} pt={2}>
             <InputProps name='Volume' label='Volume' key='Volume'/>
             <InputProps name='HR' label='HR' key='HR'/>
           </Box>  

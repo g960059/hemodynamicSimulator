@@ -54,7 +54,7 @@ const useStyles= makeStyles(theme =>({
     overflowY: 'scroll',
   },
   halfBox: {
-    maxWidth: `calc(100vw * 7/ 12 / 2 - ${theme.spacing(0)}px * 3)`,
+    // maxWidth: `calc(100vw * 7/ 12 / 2 - ${theme.spacing(0)}px * 3)`,
     height: `calc((100vw * 7/ 12 / 2 - ${theme.spacing(1)}px * 3) *3 / 4 )`,
     backgroundColor: theme.palette.background.paper,
   },
@@ -108,7 +108,7 @@ const App =() =>{
           <CssBaseline/>
           <AppBar position='fixed' elevation={1}>
             <Toolbar>
-              <Typography variant="h6" className={classes.title}>PV loops</Typography>
+              <Typography variant="h6" className={classes.title}>CardioStory</Typography>
               <Engine/>
               <Add fontSize='large' aria-controls="simple-menu" aria-haspopup="true" onClick={e=>setAnchorEl(e.currentTarget)}
                 style={{cursor: 'pointer'}}
@@ -179,7 +179,7 @@ const App =() =>{
           <Box className={classes.content} bgcolor="background.paper">
             <div className={classes.toolbar}/>
             <Grid container>
-              <Grid item xs={3}>
+              <Grid item xs={3}> 
                 <Box className={classes.sideContainer} >
                   <PropsController/>
                 </Box>
@@ -239,7 +239,7 @@ const App =() =>{
                 </Box>
               </Grid>
               <Grid item xs={2}>
-                <Box>
+                <Box className={classes.sideContainer}>
                   <p>test</p>
                 </Box>
               </Grid>
