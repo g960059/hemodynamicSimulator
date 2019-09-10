@@ -3,6 +3,8 @@ jobs:
   build:
     docker:
       - image: circleci/node
+    branches:
+      only: master
     steps:
       - checkout
       - restore_cache:
