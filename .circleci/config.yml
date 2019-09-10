@@ -3,8 +3,9 @@ jobs:
   build:
     docker:
       - image: circleci/node
-    branches:
-        only: 
+    filters:      
+      branches:
+        only:
           - master
     steps:
       - checkout
