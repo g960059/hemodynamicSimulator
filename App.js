@@ -12,6 +12,7 @@ import PlotFlow from './src/components/PlotFlow'
 import PropsController from './src/components/PropsController'
 
 import Engine from './src/components/Engine'
+import OutputPanel from './src/components/OutputPanel'
 
 import { createStore } from 'redux';
 import {
@@ -185,8 +186,8 @@ const App =() =>{
                 </Box>
               </Grid>
               <Grid item xs={7} className={classes.mainContainer} >
-                <Box>
-                  <Grid container spacing={1} style={{width: `calc(100% + 4px)`, marginBottom:'4px'}}>
+                <Box my={1}>
+                  <Grid container spacing={1}>
                     { 
                       Object.keys(PVpropTypes).map((key,index) => {
                       if(!PVpropTypes[key].selected){
@@ -239,8 +240,8 @@ const App =() =>{
                 </Box>
               </Grid>
               <Grid item xs={2}>
-                <Box className={classes.sideContainer}>
-                  <p>test</p>
+                <Box className={classes.sideContainer} mt={1}>
+                  <OutputPanel/>
                 </Box>
               </Grid>
             </Grid>
