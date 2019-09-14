@@ -14,7 +14,7 @@ jobs:
           paths:
               - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}    
-      - run: ./node_modules/.bin/parcel build index.html
+      - run: npx --max_old_space_size=1024 ./node_modules/.bin/parcel build index.html
       - run: ./node_modules/.bin/firebase deploy --token "1/Rw1Ed3X-D2gpdL_0lA9LYhw_qTl4QMW-6xmFdwLRSyk"
 workflows:
   main:
