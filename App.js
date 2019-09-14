@@ -196,7 +196,7 @@ const App =() =>{
                         return (
                         <Grid item xs={6} key={key} className={classes.halfBoxGrid}>
                           <Box className={classes.halfBox} px ={2} pt={2} pb={-1} position='relative' >
-                            <Box lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={70} top={3}><Typography variant ='h6'>{PVpropTypes[key].name}</Typography></Box>
+                            <Box lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={70} top={3}><Typography variant ='overline'>{PVpropTypes[key].name}</Typography></Box>
                             <Box color="text.secondary" position='absolute' zIndex={3} right={10} top={5} >
                               <Clear fontSize='small' aria-controls="simple-menu" aria-haspopup="true"  style={{cursor: 'pointer'}}
                                   onClick={()=>{setPVpropTypes(PVpropTypes=>{
@@ -220,7 +220,7 @@ const App =() =>{
                         return (
                         <Grid item xs={12} key={key}>
                           <Box className={classes.fullWidthBox} mr={-1} px ={2} pt={2} pb={-1} position='relative' >
-                            <Box lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={70} top={3}><Typography variant ='h6'>{propTypes[key].name}</Typography></Box>
+                            <Box lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={70} top={3}><Typography variant ='overline'>{propTypes[key].name}</Typography></Box>
                             <Box color="text.secondary" position='absolute' zIndex={3} right={15} top={5} >
                               <Clear fontSize='small' aria-controls="simple-menu" aria-haspopup="true"  style={{cursor: 'pointer'}}
                                   onClick={()=>{setPropTypes(propTypes=>{
