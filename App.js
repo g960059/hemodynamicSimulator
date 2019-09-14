@@ -12,6 +12,7 @@ import PlotFlow from './src/components/PlotFlow'
 import PropsController from './src/components/PropsController'
 
 import Engine from './src/components/Engine'
+import OutputPanel from './src/components/OutputPanel'
 
 import { createStore } from 'redux';
 import {
@@ -47,29 +48,29 @@ const useStyles= makeStyles(theme =>({
     height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`,
     overflowY: 'scroll',
     backgroundColor: theme.palette.background.default,
-    borderRight: '1px solid #e6e6e9'
+    // borderRight: '1px solid #e6e6e9'
   },
   mainContainer: {
     height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`,
     overflowY: 'scroll',
   },
   halfBox: {
-    maxWidth: `calc(100vw * 9/ 12 / 2 - ${theme.spacing(0)}px * 3)`,
-    height: `calc((100vw * 9/ 12 / 2 - ${theme.spacing(1)}px * 3) *3 / 4 )`,
+    // maxWidth: `calc(100vw * 7/ 12 / 2 - ${theme.spacing(0)}px * 3)`,
+    height: `calc((100vw * 7/ 12 / 2 - ${theme.spacing(1)}px * 3) *3 / 4 )`,
     backgroundColor: theme.palette.background.paper,
   },
   halfBoxGrid: {
     boxShadow:'1px 1px 2px 0px rgba(0,0,0,0.08)'
   },
   fullWidthBox: {
-    // maxWidth: `calc(100vw * 9/ 12  - ${theme.spacing(0)}px)`,
-    height: `calc((100vw * 9/ 12 / 2 - ${theme.spacing(5)}px) / 2)`,
+    // maxWidth: `calc(100vw * 7/ 12  - ${theme.spacing(0)}px)`,
+    height: `calc((100vw * 7/ 12 / 2 - ${theme.spacing(5)}px) / 2)`,
     backgroundColor: theme.palette.background.paper,
     boxShadow:'1px 1px 2px 0px rgba(0,0,0,0.08)',
   },
   fullBox: {
-    // width: `calc(100vw * 9/ 12  - ${theme.spacing(5)}px)`,
-    height: `calc((100vw * 9/ 12  - ${theme.spacing(5)}px) / 2 )`,
+    // width: `calc(100vw * 7/ 12  - ${theme.spacing(5)}px)`,
+    height: `calc((100vw * 7/ 12  - ${theme.spacing(5)}px) / 2 )`,
     backgroundColor: theme.palette.background.paper,
   },title: {
     flexGrow: 1,
@@ -105,142 +106,146 @@ const App =() =>{
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <Box display='flex'>
-        <CssBaseline/>
-        <AppBar position='fixed' elevation={1}>
-          <Toolbar>
-            <Typography variant="h6" className={classes.title}>PV loops</Typography>
-            <Engine/>
-            <Add fontSize='large' aria-controls="simple-menu" aria-haspopup="true" onClick={e=>setAnchorEl(e.currentTarget)}
-              style={{cursor: 'pointer'}}
-              />
-            <Menu
-              id="simple-menu"
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={()=>setAnchorEl(null)}
-            >
-            <ListSubheader>PV Loop</ListSubheader>
-            {Object.keys(PVpropTypes).map(key =>{
-              const clickHandler = e=>{
-                e.preventDefault();
-                setPVpropTypes(PVpropTypes=>{
-                  const newPVPropTypes = {...PVpropTypes}
-                  newPVPropTypes[key].selected = !PVpropTypes[key].selected 
-                  return newPVPropTypes
-                })
-              }
-              return (
-                <MenuItem key={key} onClick={clickHandler}>
-                  <Checkbox checked ={PVpropTypes[key].selected} color='primary'></Checkbox>
-                  <ListItemText>{PVpropTypes[key].name}</ListItemText>
-                </MenuItem>
-                )
-            })}
-            <Divider/>
-            <ListSubheader>Flow</ListSubheader>
-            {Object.keys(propTypes).slice(0,4).map(key =>{
-              const clickHandler = e=>{
-                e.preventDefault();
-                setPropTypes(propTypes=>{
-                  const newPropTypes = {...propTypes}
-                  newPropTypes[key].selected = !propTypes[key].selected 
-                  return newPropTypes
-                })
-              }
-              return (
-                <MenuItem key={key} onClick={clickHandler}>
-                  <Checkbox checked ={propTypes[key].selected} color='primary'></Checkbox>
-                  <ListItemText>{propTypes[key].name}</ListItemText>
-                </MenuItem>
-                )
-            })} 
-            <Divider/>
-            <ListSubheader>Pressure</ListSubheader>
-            {Object.keys(propTypes).slice(4).map(key =>{
-              const clickHandler = e=>{
-                e.preventDefault();
-                setPropTypes(propTypes=>{
-                  const newPropTypes = {...propTypes}
-                  newPropTypes[key].selected = !propTypes[key].selected 
-                  return newPropTypes
-                })
-              }
-              return (
-                <MenuItem key={key} onClick={clickHandler}>
-                  <Checkbox checked ={propTypes[key].selected} color='primary'></Checkbox>
-                  <ListItemText>{propTypes[key].name}</ListItemText>
-                </MenuItem>
-                )
-            })}                         
-            </Menu>
-    
-          </Toolbar>
-        </AppBar>
-        <Box className={classes.content} bgcolor="background.paper">
-          <div className={classes.toolbar}/>
-          <Grid container>
-            <Grid item xs={3}>
-              <Box className={classes.sideContainer} >
-                <PropsController/>
-              </Box>
-            </Grid>
-            <Grid item xs={9} className={classes.mainContainer} >
-              <Box>
-                <Grid container spacing={1} style={{width: `calc(100% + 4px)`, marginBottom:'4px'}}>
-                  { 
-                    Object.keys(PVpropTypes).map((key,index) => {
-                    if(!PVpropTypes[key].selected){
-                      return null
-                    }else{
-                      return (
-                      <Grid item xs={6} key={key} className={classes.halfBoxGrid}>
-                        <Box className={classes.halfBox} px ={2} pt={2} pb={-1} position='relative' >
-                          <Box lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={70} top={3}><Typography variant ='h6'>{PVpropTypes[key].name}</Typography></Box>
-                          <Box color="text.secondary" position='absolute' zIndex={3} right={10} top={5} >
-                            <Clear fontSize='small' aria-controls="simple-menu" aria-haspopup="true"  style={{cursor: 'pointer'}}
-                                onClick={()=>{setPVpropTypes(PVpropTypes=>{
-                                  const newPVPropTypes = {...PVpropTypes}
-                                  newPVPropTypes[key].selected = false
-                                  return newPVPropTypes
-                                })}}
-                            />
+          <CssBaseline/>
+          <AppBar position='fixed' elevation={1}>
+            <Toolbar>
+              <Typography variant="h6" className={classes.title}>CardioStory</Typography>
+              <Engine/>
+              <Add fontSize='large' aria-controls="simple-menu" aria-haspopup="true" onClick={e=>setAnchorEl(e.currentTarget)}
+                style={{cursor: 'pointer'}}
+                />
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={()=>setAnchorEl(null)}
+              >
+              <ListSubheader>PV Loop</ListSubheader>
+              {Object.keys(PVpropTypes).map(key =>{
+                const clickHandler = e=>{
+                  e.preventDefault();
+                  setPVpropTypes(PVpropTypes=>{
+                    const newPVPropTypes = {...PVpropTypes}
+                    newPVPropTypes[key].selected = !PVpropTypes[key].selected 
+                    return newPVPropTypes
+                  })
+                }
+                return (
+                  <MenuItem key={key} onClick={clickHandler}>
+                    <Checkbox checked ={PVpropTypes[key].selected} color='primary'></Checkbox>
+                    <ListItemText>{PVpropTypes[key].name}</ListItemText>
+                  </MenuItem>
+                  )
+              })}
+              <Divider/>
+              <ListSubheader>Flow</ListSubheader>
+              {Object.keys(propTypes).slice(0,4).map(key =>{
+                const clickHandler = e=>{
+                  e.preventDefault();
+                  setPropTypes(propTypes=>{
+                    const newPropTypes = {...propTypes}
+                    newPropTypes[key].selected = !propTypes[key].selected 
+                    return newPropTypes
+                  })
+                }
+                return (
+                  <MenuItem key={key} onClick={clickHandler}>
+                    <Checkbox checked ={propTypes[key].selected} color='primary'></Checkbox>
+                    <ListItemText>{propTypes[key].name}</ListItemText>
+                  </MenuItem>
+                  )
+              })} 
+              <Divider/>
+              <ListSubheader>Pressure</ListSubheader>
+              {Object.keys(propTypes).slice(4).map(key =>{
+                const clickHandler = e=>{
+                  e.preventDefault();
+                  setPropTypes(propTypes=>{
+                    const newPropTypes = {...propTypes}
+                    newPropTypes[key].selected = !propTypes[key].selected 
+                    return newPropTypes
+                  })
+                }
+                return (
+                  <MenuItem key={key} onClick={clickHandler}>
+                    <Checkbox checked ={propTypes[key].selected} color='primary'></Checkbox>
+                    <ListItemText>{propTypes[key].name}</ListItemText>
+                  </MenuItem>
+                  )
+              })}                         
+              </Menu>
+      
+            </Toolbar>
+          </AppBar>
+          <Box className={classes.content} bgcolor="background.paper">
+            <div className={classes.toolbar}/>
+            <Grid container>
+              <Grid item xs={3}> 
+                <Box className={classes.sideContainer} >
+                  <PropsController/>
+                </Box>
+              </Grid>
+              <Grid item xs={7} className={classes.mainContainer} >
+                <Box my={1}>
+                  <Grid container spacing={1}>
+                    { 
+                      Object.keys(PVpropTypes).map((key,index) => {
+                      if(!PVpropTypes[key].selected){
+                        return null
+                      }else{
+                        return (
+                        <Grid item xs={6} key={key} className={classes.halfBoxGrid}>
+                          <Box className={classes.halfBox} px ={2} pt={2} pb={-1} position='relative' >
+                            <Box lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={70} top={3}><Typography variant ='overline'>{PVpropTypes[key].name}</Typography></Box>
+                            <Box color="text.secondary" position='absolute' zIndex={3} right={10} top={5} >
+                              <Clear fontSize='small' aria-controls="simple-menu" aria-haspopup="true"  style={{cursor: 'pointer'}}
+                                  onClick={()=>{setPVpropTypes(PVpropTypes=>{
+                                    const newPVPropTypes = {...PVpropTypes}
+                                    newPVPropTypes[key].selected = false
+                                    return newPVPropTypes
+                                  })}}
+                              />
+                            </Box>
+                            <PVBuilder chamber={key}/>
                           </Box>
-                          <PVBuilder chamber={key}/>
-                        </Box>
-                      </Grid>
-                      )}
-                    }
-                  )}
-                  { 
-                    Object.keys(propTypes).map((key,index) => {
-                    if(!propTypes[key].selected){
-                      return null
-                    }else{
-                      return (
-                      <Grid item xs={12} key={key}>
-                        <Box className={classes.fullWidthBox} mr={-1} px ={2} pt={2} pb={-1} position='relative' >
-                          <Box lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={70} top={3}><Typography variant ='h6'>{propTypes[key].name}</Typography></Box>
-                          <Box color="text.secondary" position='absolute' zIndex={3} right={15} top={5} >
-                            <Clear fontSize='small' aria-controls="simple-menu" aria-haspopup="true"  style={{cursor: 'pointer'}}
-                                onClick={()=>{setPropTypes(propTypes=>{
-                                  const newPropTypes = {...propTypes}
-                                  newPropTypes[key].selected = false
-                                  return newPropTypes
-                                })}}
-                            />
+                        </Grid>
+                        )}
+                      }
+                    )}
+                    { 
+                      Object.keys(propTypes).map((key,index) => {
+                      if(!propTypes[key].selected){
+                        return null
+                      }else{
+                        return (
+                        <Grid item xs={12} key={key}>
+                          <Box className={classes.fullWidthBox} mr={-1} px ={2} pt={2} pb={-1} position='relative' >
+                            <Box lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={70} top={3}><Typography variant ='overline'>{propTypes[key].name}</Typography></Box>
+                            <Box color="text.secondary" position='absolute' zIndex={3} right={15} top={5} >
+                              <Clear fontSize='small' aria-controls="simple-menu" aria-haspopup="true"  style={{cursor: 'pointer'}}
+                                  onClick={()=>{setPropTypes(propTypes=>{
+                                    const newPropTypes = {...propTypes}
+                                    newPropTypes[key].selected = false
+                                    return newPropTypes
+                                  })}}
+                              />
+                            </Box>
+                            <PlotFlow name={key} divider={propTypes[key].divider}/>
                           </Box>
-                          <PlotFlow name={key} divider={propTypes[key].divider}/>
-                        </Box>
-                      </Grid>
-                      )}
-                    }
-                  )}                                                             
-                </Grid>
-              </Box>
+                        </Grid>
+                        )}
+                      }
+                    )}                                                             
+                  </Grid>
+                </Box>
+              </Grid>
+              <Grid item xs={2}>
+                <Box className={classes.sideContainer} mt={1}>
+                  <OutputPanel/>
+                </Box>
+              </Grid>
             </Grid>
-
-          </Grid>
-        </Box>
+          </Box>
         </Box>
       </Provider>
     </ThemeProvider>

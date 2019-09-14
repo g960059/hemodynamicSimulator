@@ -22,20 +22,24 @@ const slice_trajectory = (trajectory, time_range = 4000) =>{
   const split_time = last_time - last_time % time_range
   const start_time = last_time - time_range
 
-
   if(trajectory.length < 1 || last_time <= time_range){
     return [trajectory, trajectory, []]
   }else{
     const firstArray = []
     const secondArray = []
-    let startInd  = null
+    const res = []
     const tl = trajectory.length
     for(let i=0;i<tl;i++){
-      if(startInd == null){
-        if(trajectory[i]['x'] > start_time){
-          startInd = i
+      if(trajectory[i]['x'] > start_time){
+        if(0 < i && i< tl-1){
+          if(trajectory[i-1]['x'] != trajectory[i]['x']  || trajectory[i]['x'] != trajectory[i+1]['x']){
+            res.push(trajectory[i])
+          }
+        }else{
+          res.push(trajectory[i])
         }
       }
+      
       if(start_time+200 < trajectory[i]['x'] && trajectory[i]['x'] <= split_time){
         firstArray.push(
           {
@@ -53,7 +57,7 @@ const slice_trajectory = (trajectory, time_range = 4000) =>{
         )
       }
     }
-    return [trajectory.slice(startInd), firstArray, secondArray]
+    return [res, firstArray, secondArray]
   }
 }
 

@@ -1,13 +1,24 @@
 import React,{useState} from 'react';
-import { Box, ExpansionPanel,ExpansionPanelDetails,ExpansionPanelSummary, Typography, Select, MenuItem, InputLabel,FormControl} from '@material-ui/core';
+import { Box, ExpansionPanel,ExpansionPanelDetails,ExpansionPanelSummary, Typography, Select, MenuItem, InputLabel,FormControl, Divider} from '@material-ui/core';
 import InputProps from './InputProps'
 import {ExpandMore} from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles= makeStyles(theme =>({
+  expansionPanel: {
+    boxShadow: 'none',
+    backgroundColor: ' #fafafa'
+  },
+  expansionPanelDetail: {
+    padding: '8px'
+  },
   expanded: {
     margin: '0 !important',
   },
+  heading: {
+    fontSize: theme.typography.pxToRem(18),
+    fontWeight: theme.typography.fontWeightMedium
+  }
 }))
 
 const ChamberItems =[
@@ -44,14 +55,14 @@ export default React.memo((props) => {
 
   return (
     <>
-      <ExpansionPanel classes={{expanded: classes.expanded}}>
+      <ExpansionPanel classes={{root:classes.expansionPanel, expanded: classes.expanded}} defaultExpanded={true}>
         <ExpansionPanelSummary expandIcon={<ExpandMore/>} >
-          <Typography variant='h6'>Chamber</Typography>
+          <Typography className = {classes.heading}>Chamber</Typography>
         </ExpansionPanelSummary>
-        <ExpansionPanelDetails style={{paddingRight:0, paddingLeft:0}}>
+        <ExpansionPanelDetails className={classes.expansionPanelDetail}>
           <Box width={1} px={1}>
-            <FormControl>
-              <InputLabel htmlFor='chamber-select'>Chamber</InputLabel> 
+            <FormControl fullWidth={true} style={{marginTop:'-20px', paddingBottom:'15px'}}>
+              {/* <InputLabel htmlFor='chamber-select'>Chamber</InputLabel>  */}
               <Select value={values.chamber} onChange={handleChange} inputProps={{name:'chamber',id:'chamber-select'}}>
                 <MenuItem value={'LV'}>Left Ventricle</MenuItem>
                 <MenuItem value={'LA'}>Left Atrium</MenuItem>
@@ -64,17 +75,17 @@ export default React.memo((props) => {
                 <InputProps name={values.chamber + '_'+value} label={label} key={label}/>
               )
             })}
-          </Box>    
+          </Box>
         </ExpansionPanelDetails>
       </ExpansionPanel>
-      <ExpansionPanel  classes={{expanded: classes.expanded}}>
+      <ExpansionPanel  classes={{root:classes.expansionPanel, expanded: classes.expanded}} defaultExpanded={true}>
         <ExpansionPanelSummary expandIcon={<ExpandMore/>} >
-          <Typography variant='h6'>Vessels</Typography>
+          <Typography className={classes.heading}>Vessels</Typography>
         </ExpansionPanelSummary>
-        <ExpansionPanelDetails style={{paddingRight:0, paddingLeft:0}}>
+        <ExpansionPanelDetails className={classes.expansionPanelDetail}>
           <Box width={1} px={1}>
-            <FormControl>
-              <InputLabel htmlFor='vessel-select'>Vessel</InputLabel> 
+            <FormControl  fullWidth={true} style={{marginTop:'-20px', paddingBottom:'15px'}}>
+              {/* <InputLabel htmlFor='vessel-select'>Vessel</InputLabel>  */}
               <Select value={values.vessel} onChange={handleChange} inputProps={{name:'vessel',id:'vessel-select'}}>
                 <MenuItem value={'s'}>Systemic</MenuItem>
                 <MenuItem value={'p'}>Pulmonary</MenuItem>
@@ -98,9 +109,10 @@ export default React.memo((props) => {
           </Box>  
         </ExpansionPanelDetails>
       </ExpansionPanel>
-      <ExpansionPanel  classes={{expanded: classes.expanded}}>
-        <ExpansionPanelDetails style={{paddingRight:0, paddingLeft:0, paddingTop:'24px'}}>
-          <Box width={1} px={1}>
+      <Divider light />
+      <ExpansionPanel  classes={{root:classes.expansionPanel, expanded: classes.expanded}}>
+        <ExpansionPanelDetails className={classes.expansionPanelDetail}>
+          <Box width={1} px={1} pt={2}>
             <InputProps name='Volume' label='Volume' key='Volume'/>
             <InputProps name='HR' label='HR' key='HR'/>
           </Box>  
