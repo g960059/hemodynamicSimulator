@@ -12,8 +12,18 @@ const useStyles= makeStyles(theme =>({
   expansionPanelDetail: {
     padding: '8px'
   },
+  expansionPanelSummaryRoot: {
+    minHeight: "45px!important"
+  },  
+  expansionPanelSummaryExpanded: {
+    minHeight: 'fit-content'
+  },
+  expansionPanelSummaryContent: {
+    margin: '0px !important',
+  },  
   expanded: {
     margin: '0 !important',
+    minHeight: 'fit-content'
   },
   heading: {
     fontSize: theme.typography.pxToRem(18),
@@ -54,7 +64,7 @@ export default React.memo((props) => {
   return (
     <>
       <ExpansionPanel classes={{root:classes.expansionPanel, expanded: classes.expanded}} defaultExpanded={true}>
-        <ExpansionPanelSummary expandIcon={<ExpandMore/>} >
+        <ExpansionPanelSummary expandIcon={<ExpandMore/>}  classes={{root:classes.expansionPanelSummaryRoot ,expanded: classes.expansionPanelSummaryExpanded, content:classes.expansionPanelSummaryContent}}>
           <Typography className = {classes.heading}>Chamber</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails className={classes.expansionPanelDetail}>
@@ -74,12 +84,12 @@ export default React.memo((props) => {
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <ExpansionPanel  classes={{root:classes.expansionPanel, expanded: classes.expanded}} defaultExpanded={true}>
-        <ExpansionPanelSummary expandIcon={<ExpandMore/>} >
+        <ExpansionPanelSummary expandIcon={<ExpandMore/>} classes={{root:classes.expansionPanelSummaryRoot ,expanded: classes.expansionPanelSummaryExpanded, content:classes.expansionPanelSummaryContent}}>
           <Typography className={classes.heading}>Vessels</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails className={classes.expansionPanelDetail}>
           <Box width={1} px={1}>
-            <ButtonGroup fullWidth color="primary">
+            <ButtonGroup fullWidth color="primary" >
               <Button variant={vessel =='s' ? 'contained' :'outlined'} onClick={()=>setVessel('s')}>Systemic</Button>
               <Button variant={vessel =='p' ? 'contained' :'outlined'} onClick={()=>setVessel('p')}>Pulmonary</Button>
             </ButtonGroup>
