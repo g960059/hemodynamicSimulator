@@ -1,5 +1,5 @@
 import React,{useState} from 'react';
-import { Box, ExpansionPanel,ExpansionPanelDetails,ExpansionPanelSummary, Typography, Select, MenuItem, InputLabel,FormControl, Divider} from '@material-ui/core';
+import { Box, ExpansionPanel,ExpansionPanelDetails,ExpansionPanelSummary, Typography, Select, MenuItem, Button,ButtonGroup,FormControl, Divider} from '@material-ui/core';
 import InputProps from './InputProps'
 import {ExpandMore} from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
@@ -41,10 +41,8 @@ const VesselItems = [
 
 export default React.memo((props) => {
   const classes = useStyles()
-  const [values, setValues] = React.useState({
-    chamber: 'LV',
-    vessel: 's'
-  });
+  const [chamber, setChamber] = useState('LV');
+  const [vessel, setVessel] = useState('s');
 
   const handleChange = (event)=> {
     setValues(oldValues => ({
@@ -61,18 +59,15 @@ export default React.memo((props) => {
         </ExpansionPanelSummary>
         <ExpansionPanelDetails className={classes.expansionPanelDetail}>
           <Box width={1} px={1}>
-            <FormControl fullWidth={true} style={{marginTop:'-20px', paddingBottom:'15px'}}>
-              {/* <InputLabel htmlFor='chamber-select'>Chamber</InputLabel>  */}
-              <Select value={values.chamber} onChange={handleChange} inputProps={{name:'chamber',id:'chamber-select'}}>
-                <MenuItem value={'LV'}>Left Ventricle</MenuItem>
-                <MenuItem value={'LA'}>Left Atrium</MenuItem>
-                <MenuItem value={'RV'}>Right Ventricle</MenuItem>
-                <MenuItem value={'RA'}>Right Atrium</MenuItem>
-              </Select>
-            </FormControl>
+            <ButtonGroup fullWidth color="primary">
+              <Button variant={chamber =='LV' ? 'contained' :'outlined'} onClick={()=>setChamber('LV')}>LV</Button>
+              <Button variant={chamber =='LA' ? 'contained' :'outlined'} onClick={()=>setChamber('LA')}>LA</Button>
+              <Button variant={chamber =='RV' ? 'contained' :'outlined'} onClick={()=>setChamber('RV')}>RV</Button>
+              <Button variant={chamber =='RA' ? 'contained' :'outlined'} onClick={()=>setChamber('RA')}>RA</Button>
+            </ButtonGroup>
             {ChamberItems.map(({value,label})=>{
               return (
-                <InputProps name={values.chamber + '_'+value} label={label} key={label}/>
+                <InputProps name={chamber + '_'+value} label={label} key={label}/>
               )
             })}
           </Box>
@@ -84,24 +79,20 @@ export default React.memo((props) => {
         </ExpansionPanelSummary>
         <ExpansionPanelDetails className={classes.expansionPanelDetail}>
           <Box width={1} px={1}>
-            <FormControl  fullWidth={true} style={{marginTop:'-20px', paddingBottom:'15px'}}>
-              {/* <InputLabel htmlFor='vessel-select'>Vessel</InputLabel>  */}
-              <Select value={values.vessel} onChange={handleChange} inputProps={{name:'vessel',id:'vessel-select'}}>
-                <MenuItem value={'s'}>Systemic</MenuItem>
-                <MenuItem value={'p'}>Pulmonary</MenuItem>
-              </Select>
-            </FormControl>
+            <ButtonGroup fullWidth color="primary">
+              <Button variant={vessel =='s' ? 'contained' :'outlined'} onClick={()=>setVessel('s')}>Systemic</Button>
+              <Button variant={vessel =='p' ? 'contained' :'outlined'} onClick={()=>setVessel('p')}>Pulmonary</Button>
+            </ButtonGroup>
             {VesselItems.map(({value,label}) => {
               let name
               switch(value){
                 case 'Ra_prox':
-                  name = 'Ra'+values.vessel +'_prox'; break;
+                  name = 'Ra'+vessel +'_prox'; break;
                 case 'Ca_prox':
-                  name = 'Ca'+values.vessel +'_prox'; break;
+                  name = 'Ca'+vessel +'_prox'; break;
                 default:
-                  name =  value + values.vessel
+                  name =  value + vessel
               }
-              {/* console.log('value: ',value, 'name: ', name) */}
               return (
                 <InputProps name={name} label={label} key={label}/>
               )
