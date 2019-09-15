@@ -110,7 +110,8 @@ export default React.memo((props) => {
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <Divider light />
-      <ExpansionPanel  classes={{root:classes.expansionPanel, expanded: classes.expanded}}>
+      <ExpansionPanel  classes={{root:classes.expansionPanel, expanded: classes.expanded}} defaultExpanded={true}>
+        <ExpansionPanelSummary style={{display:'none'}} />      
         <ExpansionPanelDetails className={classes.expansionPanelDetail}>
           <Box width={1} px={1} pt={2}>
             <InputProps name='Volume' label='Volume' key='Volume'/>
