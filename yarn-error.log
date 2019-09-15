@@ -14,7 +14,7 @@ Platform:
   darwin x64
 
 Trace: 
-  Error: EACCES: permission denied, unlink '/Users/Yusuke/work/programming/VScode/work/hemodynamicSimulator/node_modules/.bin/JSONStream'
+  Error: ENFILE: file table overflow, copyfile '/usr/local/share/Library/Caches/Yarn/v4/npm-lodash-4.17.11-b39ea6229ef607ecd89e2c8df12536891cac9b8d/node_modules/lodash/fp/flatMap.js' -> '/Users/Yusuke/work/programming/VScode/work/hemodynamicSimulator/node_modules/parcel-bundler/node_modules/lodash/fp/flatMap.js'
 
 npm manifest: 
   {
