@@ -6,15 +6,15 @@ import {Box} from '@material-ui/core'
 import '../../node_modules/react-vis/dist/style.css';
 import {FlexibleXYPlot, LineSeries,MarkSeries, XAxis,YAxis} from 'react-vis';
 import PVBuilderAxis from './PVBuilderAxis'
+import PVBuilderLine from './PVBuilderLine'
 
-import {
-  useTrackedState,
-} from 'reactive-react-redux';
+import {useTrackedState} from 'reactive-react-redux';
 
 
-export default (props) => {
+export default React.memo((props) => {
   const state = useTrackedState();
   const [trajectory, setTrajectory] = useState([]);
+  const history = useRef([[]])
   const limsRef = useRef([0,0])
   const ESPVR_Ref = useRef([])
   const EDPVR_Ref = useRef([])
@@ -23,7 +23,6 @@ export default (props) => {
   const V0 = useRef()
   const alpha = useRef()
   const beta = useRef()
-
   const chamber_mapping ={LV:['Qlv','Plv'],LA:['Qla','Pla'],RV:['Qrv','Prv'],RA:['Qra','Pra']}
 
   useEffect(()=>{
@@ -55,68 +54,78 @@ export default (props) => {
       }
     }
     EDPVR_Ref.current = edpvr_points
-    
-
 
     } ,[state.hemodynamicProps])
 
   useEffect(()=>{
     const {data,time,logger} = state.hemodynamicSeries
-    setTrajectory(trajectory => {
-      // console.log(chamber_mapping[props.chamber])
-      let newTrajectory = trajectory.concat(zip_cols(logger,chamber_mapping[props.chamber]))
-      // console.log('newTrajectory:',newTrajectory)
-      if(newTrajectory.length>10){
-        let maxs = getMax(newTrajectory)
-        const [xMaxOld, yMaxOld] = limsRef.current
-        const [xMaxNew, yMaxNew] = [Math.floor((maxs[0]*1.2)/20+1)*20, Math.floor((maxs[1]*1.2/20)+1)*20]
-        if(xMaxOld != xMaxNew || yMaxOld != yMaxNew){
-          limsRef.current = [xMaxNew, yMaxNew]
-          let ESPVR_last_point = Ees.current * (limsRef.current[0]-V0.current) < limsRef.current[1] ? {x: limsRef.current[0],y: Ees.current * (limsRef.current[0]-V0.current)} : {x:limsRef.current[1]/Ees.current + V0.current , y: limsRef.current[1]} 
-          ESPVR_Ref.current = [{x:V0.current,y:0},ESPVR_last_point]
-          const step_size = 50
-          let edpvr_points = []
-          if(beta.current * (Math.exp(alpha.current*(limsRef.current[0]-V0.current))-1) <  limsRef.current[1]){
-            for(let i=0; i < step_size; i=i+2){
-              let x = limsRef.current[0] * i / step_size
-              let y = beta.current * (Math.exp(alpha.current*(x-V0.current))-1)
-              edpvr_points.push({x,y})
+    if(logger.length >0 ){
+      setTrajectory(trajectory => {
+        // console.log(chamber_mapping[props.chamber])
+        let newTrajectory = trajectory.concat(zip_cols(logger,chamber_mapping[props.chamber]))
+        // console.log('newTrajectory:',newTrajectory)
+        if(newTrajectory.length>10){
+          let maxs = getMax(newTrajectory)
+          const [xMaxOld, yMaxOld] = limsRef.current
+          let [xMaxNew, yMaxNew] = [Math.floor((maxs[0]*1.2)/20+1)*20, Math.floor((maxs[1]*1.2/20)+1)*20]
+          xMaxNew = xMaxOld < xMaxNew ? xMaxNew : xMaxOld
+          yMaxNew = yMaxOld < yMaxNew ? yMaxNew : yMaxOld
+          if(xMaxOld != xMaxNew || yMaxOld != yMaxNew){
+            limsRef.current = [xMaxNew, yMaxNew]
+            let ESPVR_last_point = Ees.current * (limsRef.current[0]-V0.current) < limsRef.current[1] ? {x: limsRef.current[0],y: Ees.current * (limsRef.current[0]-V0.current)} : {x:limsRef.current[1]/Ees.current + V0.current , y: limsRef.current[1]} 
+            ESPVR_Ref.current = [{x:V0.current,y:0},ESPVR_last_point]
+            const step_size = 50
+            let edpvr_points = []
+            if(beta.current * (Math.exp(alpha.current*(limsRef.current[0]-V0.current))-1) <  limsRef.current[1]){
+              for(let i=0; i < step_size; i=i+2){
+                let x = limsRef.current[0] * i / step_size
+                let y = beta.current * (Math.exp(alpha.current*(x-V0.current))-1)
+                edpvr_points.push({x,y})
+              }
+            }else{
+              for(let i=0; i < step_size; i=i+2){
+                let y = limsRef.current[1] * i / step_size
+                let x =  Math.log1p(y/beta.current) / alpha.current + V0.current
+                edpvr_points.push({x,y})
+              }
             }
-          }else{
-            for(let i=0; i < step_size; i=i+2){
-              let y = limsRef.current[1] * i / step_size
-              let x =  Math.log1p(y/beta.current) / alpha.current + V0.current
-              edpvr_points.push({x,y})
-            }
-          }
-          EDPVR_Ref.current = edpvr_points
-        }          
-      }
-      const len = newTrajectory.length
-      if (len >300){
-        return newTrajectory.slice(len-300+1,300)
-      }
-      return newTrajectory
-    })
+            EDPVR_Ref.current = edpvr_points
+          }          
+        }
+        const len = newTrajectory.length
+        if (len >100){
+          history.current.push(newTrajectory.slice(0,100))
+          return newTrajectory.slice(98)
+        }
+        return newTrajectory
+      })
+    }
+
   },[state.hemodynamicSeries])
 
    if(trajectory.length > 2){
      return (
       <Box position ='relative' width={1} height={1}>
-        <PVBuilderAxis lims={limsRef.current} ESPVR={ESPVR_Ref.current} EDPVR={EDPVR_Ref.current} />
+        <PVBuilderAxis lims={limsRef.current} ESPVR={ESPVR_Ref.current} EDPVR={EDPVR_Ref.current}/>
+        {
+          (
+            history.current.map((data,index)=>(
+              <PVBuilderLine key={index} data={data} lims={limsRef.current}/>
+            )
+          ))
+        }
         <Box position='absolute'  width={1} height={1}>
           <FlexibleXYPlot xDomain={[0,limsRef.current[0]]} yDomain={[0,limsRef.current[1]]}> 
-            <LineSeries data= {trajectory} />
+            <LineSeries data={trajectory} opacity={0.6}/>
             <MarkSeries data={[{...trajectory[trajectory.length-1], size: 3},{...trajectory[0], size: 10, opacity:0},{...trajectory[0], size: 0, opacity:0}]}/>
           </FlexibleXYPlot>
         </Box>
       </Box>
-      
       )
      }else{
       return null
     }
-}
+})
 
 
     // Tmax.current = cv_props[c_Tmax]
