@@ -64,7 +64,6 @@ const Engine = props =>{
       time = time % (60000/state.hemodynamicProps.HR)
       data = flag ? rk(pv_func,state.hemodynamicProps,new_logger)(data,time + maxAVdelay.current,dt): rk(pv_func,state.hemodynamicProps,null)(data,time + maxAVdelay.current,dt)
       time += dt
-      // time = (time-maxAVdelay.current) % (60000/state.hemodynamicProps.HR) + maxAVdelay.current
       delta -= dt
       flag = !flag
     }

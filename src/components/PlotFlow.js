@@ -61,30 +61,6 @@ const slice_trajectory = (trajectory, time_range = 4000) =>{
   }
 }
 
-// const transformTrajectory = (trajectory, time,time_range=4000) =>{
-//   const time_ = time - initial_time
-//   if(trajectory.length < 1){
-//     return  [[trajectory,[]], [0, time_range]]
-//   }
-//   const tl = trajectory.length
-//   const quotient = Math.floor(time_/time_range)
-//   if(trajectory[0]['x'] > quotient * time_range){
-//     return [[trajectory,[]],[quotient * time_range,(quotient+1) * time_range]]
-//   }
-//   const frontArray = []
-//   let endInd  = 0
-//   let flag = false
-//   for(let i=0;i<tl;i++){
-//     if(trajectory[i]['x'] > quotient * time_range){
-//       if(! flag){
-//         endInd = i
-//         flag = true
-//       }
-//       frontArray.push({x:trajectory[i]['x']-time_range, y:trajectory[i]['y']})
-//     }
-//   }
-//   return [[frontArray, trajectory.slice(10,endInd)],[(quotient-1) * time_range,(quotient) * time_range]]
-// }
 
 
 export default (props) => {
@@ -112,7 +88,11 @@ export default (props) => {
         }else{
           newData = extractTimeSereisDivider(logger, props.name, cv_props[props.divider],lastLogTime.current,  accTime.current, 60000/state.hemodynamicProps.HR)
         }
-        let timeDif = logger[logger.length-1]['t'] - lastLogTime.current
+        // console.log(newData)
+        let timeDif = logger[logger.length-1]['t'] - lastLogTime.current 
+        if(timeDif < 0){
+          timeDif += 60000/state.hemodynamicProps.HR 
+        }
         if(timeDif > 0){
           accTime.current += timeDif
         }
@@ -158,6 +138,32 @@ export default (props) => {
   )
 }
 
+
+
+// const transformTrajectory = (trajectory, time,time_range=4000) =>{
+//   const time_ = time - initial_time
+//   if(trajectory.length < 1){
+//     return  [[trajectory,[]], [0, time_range]]
+//   }
+//   const tl = trajectory.length
+//   const quotient = Math.floor(time_/time_range)
+//   if(trajectory[0]['x'] > quotient * time_range){
+//     return [[trajectory,[]],[quotient * time_range,(quotient+1) * time_range]]
+//   }
+//   const frontArray = []
+//   let endInd  = 0
+//   let flag = false
+//   for(let i=0;i<tl;i++){
+//     if(trajectory[i]['x'] > quotient * time_range){
+//       if(! flag){
+//         endInd = i
+//         flag = true
+//       }
+//       frontArray.push({x:trajectory[i]['x']-time_range, y:trajectory[i]['y']})
+//     }
+//   }
+//   return [[frontArray, trajectory.slice(10,endInd)],[(quotient-1) * time_range,(quotient) * time_range]]
+// }
 
   // const cvProps = useRef()
   // const calcFlow = useRef()
