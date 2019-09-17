@@ -107,7 +107,8 @@ const Simulator =() =>{
           <CssBaseline/>
           <AppBar position='fixed' elevation={1}>
             <Toolbar>
-              <Link variant="h6" href="/" className={classes.title} color ="inherit" underline='none'>CardioStory</Link>
+              <Link variant="h6" href="/" color ="inherit" underline='none'>CardioStory</Link>
+              <Box flexGrow={1}/>
               <Engine/>
               <Add fontSize='large' aria-controls="simple-menu" aria-haspopup= {true} onClick={e=>setAnchorEl(e.currentTarget)}
                 style={{cursor: 'pointer'}}
