@@ -37,11 +37,11 @@ export default (props) => {
     PCWP: {min: 8, max: 20},
   })
   const nextOutputs = useRef({
-    AoP: {min: Infinity, max: -Infinity},
-    CVP: {min: Infinity, max: -Infinity},
-    PAP: {min: Infinity, max: -Infinity},
-    Qlv: {min: Infinity, max: -Infinity},
-    PCWP: {min: Infinity, max: -Infinity},        
+    AoP: {min: 66, max: 109},
+    CVP: {min: 2, max: 10},
+    PAP: {min: 16, max: 24},
+    Qlv: {min: 53, max: 146},
+    PCWP: {min: 8, max: 20},      
   })
   const isFinished = useRef(false)
   useEffect(() => {
