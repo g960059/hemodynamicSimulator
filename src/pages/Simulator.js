@@ -108,19 +108,25 @@ const Simulator =() =>{
       <Provider store={store}>
         <Box display='flex'>
           <CssBaseline/>
-          <AppBar position='fixed' elevation={1} >
-            <Toolbar>
-              <Link variant="h6" href="/" color ="inherit" underline='none'>CardioStory</Link>
-              <Box flexGrow={1}/>
-            </Toolbar>
-          </AppBar>
-          <Box className={classes.content} bgcolor="background.paper">
-            <div className={classes.toolbar}/>
-            <Grid container>
-              <Grid item xs={3}> 
-                <Box className={classes.sideContainer} >
-                  <Box my={1} className={classes.controlBar} display="flex" color='grey.600' >
-                    <Box flexGrow={1}/>
+          <AppBar position='fixed' elevation={0} color ="inherit" style={{borderBottom:"1px solid #e0e0e0"}}>
+            <Toolbar disableGutters={true} variant="dense">
+              <Grid container>
+                <Grid item xs={3}>
+                  <Box display="flex" justifyContent="flex-end" alignItems="center" height={1}>
+                    <Box flexGrow={1} display="flex" height={1} justifyContent="center" alignItems="center">
+                      <Link variant="h6" href="/" color ="inherit" underline='none'>CardioStory</Link>
+                    </Box>
+                    <Box width='1px' height={1}>
+                      <Divider orientation="vertical"/>
+                    </Box>
+                  </Box>
+                </Grid>
+                {/* <Grid item xs={1}>
+                  <Box display="flex" justifyContent="flex-end" height={1}>
+                  </Box>
+                </Grid> */}
+                <Grid item xs={9}>
+                  <Box color='grey.600' px={4}>
                     <Engine/>
                     <Add fontSize='large' aria-controls="simple-menu" aria-haspopup= {true} onClick={e=>setAnchorEl(e.currentTarget)}
                           style={{cursor: 'pointer'}} 
@@ -185,12 +191,20 @@ const Simulator =() =>{
                           )
                       })}                         
                     </Menu>
-                  </Box>                  
+                  </Box>                       
+                </Grid>
+              </Grid>
+            </Toolbar>
+          </AppBar>
+          <Box className={classes.content} bgcolor="background.paper">
+            <div className={classes.toolbar}/>
+            <Grid container>
+              <Grid item xs={3}> 
+                <Box className={classes.sideContainer} >             
                   <PropsController/>
                 </Box>
               </Grid>
               <Grid item xs={7} className={classes.mainContainer} >
-
                 <Box my={1}>
                   <Grid container spacing={1}>
                     { 
@@ -245,7 +259,7 @@ const Simulator =() =>{
                 </Box>
               </Grid>
               <Grid item xs={2}>
-                <Box className={classes.sideContainer} mt={1} color='grey.600'>
+                <Box className={classes.sideContainer}  color='grey.600' pt={1}>
                   <OutputPanel/>
                 </Box>
               </Grid>
