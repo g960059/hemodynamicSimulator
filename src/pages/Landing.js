@@ -30,7 +30,7 @@ const useStyles= makeStyles(theme =>({
   mainContainer: {
     height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`,
     overflowY: 'scroll',
-    paddingTop: theme.spacing(4),
+    paddingTop: theme.spacing(8),
   },
   paper: {
     padding: theme.spacing(2),
@@ -59,13 +59,13 @@ export default (props) => {
     <ThemeProvider theme={theme}>
       <Box display='flex'>      
         <CssBaseline/>
-        <AppBar position='fixed' elevation={1} color='inherit'>
+        {/* <AppBar position='fixed' elevation={1} color='inherit'>
           <Toolbar>
             <Typography variant="h6" className={classes.logoTitle}>CardioStory</Typography>
           </Toolbar>
-        </AppBar>
+        </AppBar> */}
         <Box className={classes.content} bgcolor ="background.paper">
-          <div className={classes.toolbar}/>
+          {/* <div className={classes.toolbar}/> */}
           <Box className={classes.mainContainer}>
             <Grid container spacing={1}>
               <Grid item xs={12} sm={12} md={5}>
@@ -86,7 +86,7 @@ export default (props) => {
                 </Box>
               </Grid>        
               <Grid item md={7}>
-                <Box m={2}>
+                <Box px={4}>
                   <img src={gifImg} alt="gif" style={{width:'100%'}}/>
                 </Box>
               </Grid>

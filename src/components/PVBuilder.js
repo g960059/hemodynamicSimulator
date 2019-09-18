@@ -15,6 +15,7 @@ export default React.memo((props) => {
   const state = useTrackedState();
   const [trajectory, setTrajectory] = useState([]);
   const history = useRef([[]])
+  const historyIndex = useRef(0)
   const limsRef = useRef([0,0])
   const ESPVR_Ref = useRef([])
   const EDPVR_Ref = useRef([])
@@ -94,7 +95,8 @@ export default React.memo((props) => {
         }
         const len = newTrajectory.length
         if (len >100){
-          history.current.push(newTrajectory.slice(0,100))
+          history.current[historyIndex.current]=newTrajectory.slice(0,100)
+          historyIndex.current =  historyIndex.current >=20 ? 0 : historyIndex.current+1
           return newTrajectory.slice(98)
         }
         return newTrajectory

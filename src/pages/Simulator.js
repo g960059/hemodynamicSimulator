@@ -57,8 +57,11 @@ const useStyles= makeStyles(theme =>({
     height: `calc((100vw * 7/ 12 / 2 - ${theme.spacing(1)}px * 3) *3 / 4 )`,
     backgroundColor: theme.palette.background.paper,
   },
-  halfBoxGrid: {
+  withBoxShadow: {
     boxShadow:'1px 1px 2px 0px rgba(0,0,0,0.08)'
+  },
+  controlBar: {
+    borderBottom: '1px solid #e0e0e0'
   },
   fullWidthBox: {
     // maxWidth: `calc(100vw * 7/ 12  - ${theme.spacing(0)}px)`,
@@ -105,75 +108,10 @@ const Simulator =() =>{
       <Provider store={store}>
         <Box display='flex'>
           <CssBaseline/>
-          <AppBar position='fixed' elevation={1}>
+          <AppBar position='fixed' elevation={1} >
             <Toolbar>
               <Link variant="h6" href="/" color ="inherit" underline='none'>CardioStory</Link>
               <Box flexGrow={1}/>
-              <Engine/>
-              <Add fontSize='large' aria-controls="simple-menu" aria-haspopup= {true} onClick={e=>setAnchorEl(e.currentTarget)}
-                style={{cursor: 'pointer'}}
-                />
-              <Menu
-                id="simple-menu"
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={()=>setAnchorEl(null)}
-              >
-              <ListSubheader>PV Loop</ListSubheader>
-              {Object.keys(PVpropTypes).map(key =>{
-                const clickHandler = e=>{
-                  e.preventDefault();
-                  setPVpropTypes(PVpropTypes=>{
-                    const newPVPropTypes = {...PVpropTypes}
-                    newPVPropTypes[key].selected = !PVpropTypes[key].selected 
-                    return newPVPropTypes
-                  })
-                }
-                return (
-                  <MenuItem key={key} onClick={clickHandler}>
-                    <Checkbox checked ={PVpropTypes[key].selected} color='primary'></Checkbox>
-                    <ListItemText>{PVpropTypes[key].name}</ListItemText>
-                  </MenuItem>
-                  )
-              })}
-              <Divider/>
-              <ListSubheader>Flow</ListSubheader>
-              {Object.keys(propTypes).slice(0,4).map(key =>{
-                const clickHandler = e=>{
-                  e.preventDefault();
-                  setPropTypes(propTypes=>{
-                    const newPropTypes = {...propTypes}
-                    newPropTypes[key].selected = !propTypes[key].selected 
-                    return newPropTypes
-                  })
-                }
-                return (
-                  <MenuItem key={key} onClick={clickHandler}>
-                    <Checkbox checked ={propTypes[key].selected} color='primary'></Checkbox>
-                    <ListItemText>{propTypes[key].name}</ListItemText>
-                  </MenuItem>
-                  )
-              })} 
-              <Divider/>
-              <ListSubheader>Pressure</ListSubheader>
-              {Object.keys(propTypes).slice(4).map(key =>{
-                const clickHandler = e=>{
-                  e.preventDefault();
-                  setPropTypes(propTypes=>{
-                    const newPropTypes = {...propTypes}
-                    newPropTypes[key].selected = !propTypes[key].selected 
-                    return newPropTypes
-                  })
-                }
-                return (
-                  <MenuItem key={key} onClick={clickHandler}>
-                    <Checkbox checked ={propTypes[key].selected} color='primary'></Checkbox>
-                    <ListItemText>{propTypes[key].name}</ListItemText>
-                  </MenuItem>
-                  )
-              })}                         
-              </Menu>
-      
             </Toolbar>
           </AppBar>
           <Box className={classes.content} bgcolor="background.paper">
@@ -181,10 +119,78 @@ const Simulator =() =>{
             <Grid container>
               <Grid item xs={3}> 
                 <Box className={classes.sideContainer} >
+                  <Box my={1} className={classes.controlBar} display="flex" color='grey.600' >
+                    <Box flexGrow={1}/>
+                    <Engine/>
+                    <Add fontSize='large' aria-controls="simple-menu" aria-haspopup= {true} onClick={e=>setAnchorEl(e.currentTarget)}
+                          style={{cursor: 'pointer'}} 
+                      />
+                    <Menu
+                      id="simple-menu"
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl)}
+                      onClose={()=>setAnchorEl(null)}
+                    >
+                      <ListSubheader>PV Loop</ListSubheader>
+                      {Object.keys(PVpropTypes).map(key =>{
+                        const clickHandler = e=>{
+                          e.preventDefault();
+                          setPVpropTypes(PVpropTypes=>{
+                            const newPVPropTypes = {...PVpropTypes}
+                            newPVPropTypes[key].selected = !PVpropTypes[key].selected 
+                            return newPVPropTypes
+                          })
+                        }
+                        return (
+                          <MenuItem key={key} onClick={clickHandler}>
+                            <Checkbox checked ={PVpropTypes[key].selected} color='primary'></Checkbox>
+                            <ListItemText>{PVpropTypes[key].name}</ListItemText>
+                          </MenuItem>
+                          )
+                      })}
+                      <Divider/>
+                      <ListSubheader>Flow</ListSubheader>
+                      {Object.keys(propTypes).slice(0,4).map(key =>{
+                        const clickHandler = e=>{
+                          e.preventDefault();
+                          setPropTypes(propTypes=>{
+                            const newPropTypes = {...propTypes}
+                            newPropTypes[key].selected = !propTypes[key].selected 
+                            return newPropTypes
+                          })
+                        }
+                        return (
+                          <MenuItem key={key} onClick={clickHandler}>
+                            <Checkbox checked ={propTypes[key].selected} color='primary'></Checkbox>
+                            <ListItemText>{propTypes[key].name}</ListItemText>
+                          </MenuItem>
+                          )
+                      })} 
+                      <Divider/>
+                      <ListSubheader>Pressure</ListSubheader>
+                      {Object.keys(propTypes).slice(4).map(key =>{
+                        const clickHandler = e=>{
+                          e.preventDefault();
+                          setPropTypes(propTypes=>{
+                            const newPropTypes = {...propTypes}
+                            newPropTypes[key].selected = !propTypes[key].selected 
+                            return newPropTypes
+                          })
+                        }
+                        return (
+                          <MenuItem key={key} onClick={clickHandler}>
+                            <Checkbox checked ={propTypes[key].selected} color='primary'></Checkbox>
+                            <ListItemText>{propTypes[key].name}</ListItemText>
+                          </MenuItem>
+                          )
+                      })}                         
+                    </Menu>
+                  </Box>                  
                   <PropsController/>
                 </Box>
               </Grid>
               <Grid item xs={7} className={classes.mainContainer} >
+
                 <Box my={1}>
                   <Grid container spacing={1}>
                     { 
@@ -193,7 +199,7 @@ const Simulator =() =>{
                         return null
                       }else{
                         return (
-                        <Grid item xs={6} key={key} className={classes.halfBoxGrid}>
+                        <Grid item xs={6} key={key} className={classes.withBoxShadow}>
                           <Box className={classes.halfBox} px ={2} pt={2} pb={-1} position='relative' >
                             <Box lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={70} top={3}><Typography variant ='overline'>{PVpropTypes[key].name}</Typography></Box>
                             <Box color="text.secondary" position='absolute' zIndex={3} right={10} top={5} >
@@ -239,7 +245,7 @@ const Simulator =() =>{
                 </Box>
               </Grid>
               <Grid item xs={2}>
-                <Box className={classes.sideContainer} mt={1}>
+                <Box className={classes.sideContainer} mt={1} color='grey.600'>
                   <OutputPanel/>
                 </Box>
               </Grid>

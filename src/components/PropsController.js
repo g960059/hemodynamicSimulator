@@ -7,7 +7,10 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles= makeStyles(theme =>({
   expansionPanel: {
     boxShadow: 'none',
-    backgroundColor: ' #fafafa'
+    backgroundColor: ' #fafafa',
+    '&:before': {
+      display: 'none'
+    }
   },
   expansionPanelDetail: {
     padding: '8px'
