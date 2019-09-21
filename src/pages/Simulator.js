@@ -85,9 +85,9 @@ const Simulator =() =>{
   
   const [PVpropTypes, setPVpropTypes] = useState({
     'RA': {name: 'Right Atrium', selected: false},
-    'LA': {name: 'Left Atrium', selected: true},
+    'LA': {name: 'Left Atrium', selected: false},
     'RV': {name: 'Right Ventricle', selected: false},
-    'LV': {name: 'Left Ventricle', selected: true},
+    'LV': {name: 'Left Ventricle', selected: false},
   });
   const [propTypes, setPropTypes] = useState({
     'Imv': { name: 'Mitral Valve Flow', selected: true, divider: null},
@@ -113,11 +113,11 @@ const Simulator =() =>{
               <Grid container>
                 <Grid item xs={3}>
                   <Box display="flex" justifyContent="flex-end" alignItems="center" height={1}>
-                    <Box flexGrow={1} display="flex" height={1} justifyContent="center" alignItems="center">
-                      <Link variant="h6" href="/" color ="inherit" underline='none'>CardioStory</Link>
+                    <Box flexGrow={1} display="flex" height={1} justifyContent="flex-start" alignItems="center" ml={4}>
+                      <Link variant="h6" href="/" color ="inherit" underline='none'>CirculateSim</Link>
                     </Box>
                     <Box width='1px' height={1}>
-                      <Divider orientation="vertical"/>
+                      <Divider orientation="vertical" />
                     </Box>
                   </Box>
                 </Grid>

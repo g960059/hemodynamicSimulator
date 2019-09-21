@@ -70,13 +70,13 @@ export default (props) => {
             <Grid container spacing={1}>
               <Grid item xs={12} sm={12} md={5}>
                 <Box m={3}  textAlign="center">
-                  <Typography variant='h2' color='primary'>CardioStory</Typography>
+                  <Typography variant='h2' color='primary'>CirculateSim</Typography>
                 </Box>
                 <Box m={3} textAlign="center">
                   <Typography variant='h5' color='primary'>
                     Cardiovascular simulator
                     <br/>
-                    for faster and intuitive learning.
+                    for intuitive training and education.
                   </Typography>
                   <Box mt={5} width={1} display='flex'  justifyContent="center">
                     <Button variant="outlined" color="primary" href="/simulator">
