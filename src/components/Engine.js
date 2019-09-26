@@ -17,7 +17,7 @@ const Engine = props =>{
   const state = useTrackedState();
   const dispatch = useDispatch();
 
-  const [speed, setSpeed] = useState(0.3);
+  const [speed, setSpeed] = useState(0.5);
 
   const rafIdRef = useRef(new Set())
   const activeCallbacks = useRef(new Set())
@@ -165,7 +165,7 @@ const Engine = props =>{
     return <PlayArrow  fontSize='large' 
     style={{cursor:'pointer'}}
     onClick={()=>{
-        setSpeed(0.3)
+        setSpeed(0.5)
       }}/>
   }
   // return (

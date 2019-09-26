@@ -1,5 +1,5 @@
 import React, {useState,} from 'react';
-import { makeStyles,createMuiTheme } from '@material-ui/core/styles';
+import { makeStyles,createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
 import {Grid, Box, Typography, MenuItem, Checkbox, ListItemText, Menu, AppBar, Toolbar, CssBaseline, Divider,ListSubheader, Link} from '@material-ui/core'
 import {Add, Clear} from '@material-ui/icons';
 import { ThemeProvider } from '@material-ui/styles';
@@ -7,17 +7,17 @@ import { ThemeProvider } from '@material-ui/styles';
 import reducer from '../reducers'
 
 import PVBuilder from '../components/PVBuilder'
-import PlotFlow from '../components/PlotFlow'
 import PropsController from '../components/PropsController'
 
 import Engine from '../components/Engine'
 import OutputPanel from '../components/OutputPanel'
+import TimeSeriesBox from '../components/TimeSeriesBox/TimeSeriesBox'
 
 import { createStore } from 'redux';
 import { Provider} from 'reactive-react-redux';
 
 
-const theme = createMuiTheme({
+let theme = createMuiTheme({
   mixins: {
     toolbar: {
       minHeight: 42,
@@ -30,6 +30,7 @@ const theme = createMuiTheme({
     }
   },
 });
+theme = responsiveFontSizes(theme);
 theme.shadows[1] = '0px 1px 5px 1px rgba(0,0,0,0.1)'
 
 const useStyles= makeStyles(theme =>({
@@ -65,7 +66,7 @@ const useStyles= makeStyles(theme =>({
   },
   fullWidthBox: {
     // maxWidth: `calc(100vw * 7/ 12  - ${theme.spacing(0)}px)`,
-    height: `calc((100vw * 7/ 12 / 2 - ${theme.spacing(5)}px) / 2)`,
+    height: `calc(100vw * 2/ 12 )`,
     backgroundColor: theme.palette.background.paper,
     boxShadow:'1px 1px 2px 0px rgba(0,0,0,0.08)',
   },
@@ -99,7 +100,7 @@ const Simulator =() =>{
     'Plv': { name: 'Left Ventricle', selected: false, divider: null},
     'Pla': { name: 'Left Atrium', selected: false, divider: null},
     'Prv': { name: 'Right Ventricle', selected: false, divider: null},
-    'Prv': { name: 'Right Artrium', selected: false, divider: null},
+    'Pra': { name: 'Right Artrium', selected: false, divider: null},
   });
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -191,6 +192,7 @@ const Simulator =() =>{
                           )
                       })}                         
                     </Menu>
+                  
                   </Box>                       
                 </Grid>
               </Grid>
@@ -231,7 +233,7 @@ const Simulator =() =>{
                         )}
                       }
                     )}
-                    { 
+                    {/* { 
                       Object.keys(propTypes).map((key,index) => {
                       if(!propTypes[key].selected){
                         return null
@@ -254,7 +256,13 @@ const Simulator =() =>{
                         </Grid>
                         )}
                       }
-                    )}                                                             
+                    )}                                                              */}
+                    <Grid item xs = {12}>
+                      {/* <Box className={classes.fullWidthBox} mr={-1} px ={2} pt={2} pb={-1} position='relative' >
+                        <PlotFlow keys={['Qas_prox', 'Plv', 'Pla']}/>
+                      </Box> */}
+                      <TimeSeriesBox/>
+                    </Grid>
                   </Grid>
                 </Box>
               </Grid>
