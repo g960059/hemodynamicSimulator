@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect, useLayoutEffect} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import { makeStyles} from '@material-ui/core/styles';
 import {Grid, Box, Button, MenuItem, Checkbox, ListItemText, Menu,Divider,ListSubheader,Snackbar, IconButton} from '@material-ui/core'
 import {Clear, Add}from '@material-ui/icons';
@@ -22,61 +22,89 @@ export default (props) => {
     { key: 'Iasp',  selected: false },
     { key: 'Itv',  selected: false },
     { key: 'Iapp',  selected: false },
-    { key: 'Qas_prox',  selected: true },
+    { key: 'Qas_prox',  selected: false },
     { key: 'Qap_prox',  selected: false },
-    { key: 'Plv',  selected: true },
-    { key: 'Pla',  selected: true },
+    { key: 'Plv',  selected: false },
+    { key: 'Pla',  selected: false },
     { key: 'Prv',  selected: false },
     { key: 'Pra',  selected: false }
   ]);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-    const legendItems = useRef(['Aorta','Left Ventricle','Left Atrium'])
-    const selectedItems = useRef(['Qas_prox','Plv','Pla'])
-    const selectedItemsCounter = useRef(3)
-    const [openSnackbar, setOpenSnackbar] = React.useState(false);
-    const mode = useRef('pressure')
+  const legendItems = useRef([])
+  const selectedItems = useRef([])
+  const selectedItemsCounter = useRef(0)
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const mode = useRef(null)
 
-
-    if(propTypes.slice(4).some(x=>x.selected)){
-      mode.current = 'pressure'
-    }else{
-      if(propTypes.slice(0,4).some(x=>x.selected)){
-        mode.current = 'flow'
-      }else{
-        mode.current = null
-      }
-    }        
-    const clickHandler = ind=>e=>{
-      e.preventDefault();
-      setPropTypes(propTypes=>{
-        const newPropTypes = [...propTypes]
-        // console.log('ind: ', ind)
-        if(!propTypes[ind].selected){
-          selectedItems.current = [...selectedItems.current, propTypes[ind].key]
-          legendItems.current = [...legendItems.current, propSettings[propTypes[ind].key].name]
-          newPropTypes[ind].selected = true
-          selectedItemsCounter.current += 1
+  useEffect(() => {
+    if(props.initialKeys!= null){
+      setPropTypes(prev=>{
+        const newState = [...prev]
+        prev.forEach((item,index) =>{
+          if(props.initialKeys.some(x=>x==item.key)){
+            newState[index].selected = true
+            selectedItems.current = [...selectedItems.current, item.key]
+            legendItems.current = [...legendItems.current, propSettings[item.key].name]            
+            selectedItemsCounter.current += 1
+          }
+        })
+        if(propTypes.slice(4).some(x=>x.selected)){
+          mode.current = 'pressure'
         }else{
-          selectedItems.current = selectedItems.current.map(item=> item != propTypes[ind].key ? item: null)
-          legendItems.current = legendItems.current.map(name => name != propSettings[propTypes[ind].key].name ? name: null)
-          newPropTypes[ind].selected = false
-          selectedItemsCounter.current -= 1
-        }
-        // console.log('selectedItems: ',selectedItems.current)
-        // console.log('selectedItemsCounter: ',selectedItemsCounter.current)
-        return newPropTypes
+          if(propTypes.slice(0,4).some(x=>x.selected)){
+            mode.current = 'flow'
+          }else{
+            mode.current = null
+          }
+        }             
+        return newState
       })
     }
+  }, []);
+
+  if(propTypes.slice(4).some(x=>x.selected)){
+    mode.current = 'pressure'
+  }else{
+    if(propTypes.slice(0,4).some(x=>x.selected)){
+      mode.current = 'flow'
+    }else{
+      mode.current = null
+    }
+  }        
+  const clickHandler = ind=>e=>{
+    e.preventDefault();
+    setPropTypes(propTypes=>{
+      const newPropTypes = [...propTypes]
+      // console.log('ind: ', ind)
+      if(!propTypes[ind].selected){
+        selectedItems.current = [...selectedItems.current, propTypes[ind].key]
+        legendItems.current = [...legendItems.current, propSettings[propTypes[ind].key].name]
+        newPropTypes[ind].selected = true
+        selectedItemsCounter.current += 1
+      }else{
+        selectedItems.current = selectedItems.current.map(item=> item != propTypes[ind].key ? item: null)
+        legendItems.current = legendItems.current.map(name => name != propSettings[propTypes[ind].key].name ? name: null)
+        newPropTypes[ind].selected = false
+        selectedItemsCounter.current -= 1
+      }
+      // console.log('selectedItems: ',selectedItems.current)
+      // console.log('selectedItemsCounter: ',selectedItemsCounter.current)
+      return newPropTypes
+    })
+  }
 
   return (
     <Grid item xs={12}>
-      <Box className={classes.fullWidthBox} mr={-1} px ={2} pt={2} pb={-1} mt={1} position='relative' >
-        <Box position='absolute' left={68} top={0} display='flex'>
+      <Box className={classes.fullWidthBox}  px ={2} pt={1} pb={-1} mt={2} position='relative' >
+        <Box position='absolute' left={68} top={-8} display='flex'>
           <Legend items = {legendItems.current} />
-          <Button  size="small" color='primary' variant="outlined" style={{zIndex:100}} aria-controls='ts-menu' aria-haspopup= {true} onClick={e=>setAnchorEl(e.currentTarget)}>
+          <IconButton  aria-controls='ts-menu' aria-haspopup= {true} onClick={e=>setAnchorEl(e.currentTarget)} style={{zIndex:100}}>
+            <Add/>
+          </IconButton>
+          {/* <Button  size="small"  variant="outlined" style={{zIndex:100, color:'grey', padding: '3px 6px', marginLeft:'15px'}} aria-controls='ts-menu' aria-haspopup= {true} onClick={e=>setAnchorEl(e.currentTarget)}>
             <Add fontSize='small'/> Add
-          </Button>
+          </Button> */}
           <Menu id="ts-menu" anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={()=>setAnchorEl(null)}>
             <ListSubheader>Flow</ListSubheader>
             {propTypes.map((item,index) =>{
@@ -132,8 +160,10 @@ export default (props) => {
             ]}
           />          
         </Box>
-        <Box color="text.secondary" position='absolute' zIndex={3} right={15} top={5} >
-          <Clear fontSize='small' aria-controls="simple-menu" aria-haspopup= {true} style={{cursor: 'pointer'}} onClick={()=>{}}/>
+        <Box position='absolute' zIndex={3} right={0} top={-8} >
+          <IconButton onClick={props.remove}>
+            <Clear/>
+          </IconButton>
         </Box>
         { (selectedItemsCounter.current >0 ) && <PlotFlow keys={selectedItems.current}/> }
       </Box>

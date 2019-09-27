@@ -5,7 +5,10 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles= makeStyles(theme =>({
   root:{
-    paddingTop: 0,
+    // paddingTop: '13px',
+    // paddingBottom: '13px',
+    // marginLeft: '3px',
+    // backgroundColor: 'white'
   },
   dense:{
     paddingTop: 0,

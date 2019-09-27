@@ -1,7 +1,7 @@
 import React from 'react';
 import {Box} from '@material-ui/core'
 
-import '../../node_modules/react-vis/dist/style.css';
+import '../../../node_modules/react-vis/dist/style.css';
 import {FlexibleXYPlot, LineSeries} from 'react-vis';
 
 export default React.memo((props) => {

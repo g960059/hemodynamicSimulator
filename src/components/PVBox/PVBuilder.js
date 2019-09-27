@@ -1,9 +1,9 @@
 import React,{useEffect,useState,useRef} from 'react';
-import {getMax, zip_cols} from '../utils/utils'
+import {getMax, zip_cols} from '../../utils/utils'
 import {Box} from '@material-ui/core'
 
 
-import '../../node_modules/react-vis/dist/style.css';
+import '../../../node_modules/react-vis/dist/style.css';
 import {FlexibleXYPlot, LineSeries,MarkSeries, XAxis,YAxis} from 'react-vis';
 import PVBuilderAxis from './PVBuilderAxis'
 import PVBuilderLine from './PVBuilderLine'

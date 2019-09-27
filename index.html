@@ -14,4 +14,27 @@
     <div id="root"></div>
     <script src="./index.js"></script>
 </body>
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.0.0/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/7.0.0/firebase-analytics.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyDvBkp1mRmz3MdZtPULL5HcDTOe5P0yc7s",
+    authDomain: "hemodynamicsimulator.firebaseapp.com",
+    databaseURL: "https://hemodynamicsimulator.firebaseio.com",
+    projectId: "hemodynamicsimulator",
+    storageBucket: "",
+    messagingSenderId: "684098873732",
+    appId: "1:684098873732:web:6ff40bd5ad39e8289b95d1",
+    measurementId: "G-XY5ZBZ0RBX"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+</script>
 </html>

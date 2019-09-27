@@ -1,17 +1,16 @@
-import React, {useState,} from 'react';
+import React, {useState,useRef} from 'react';
 import { makeStyles,createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
-import {Grid, Box, Typography, MenuItem, Checkbox, ListItemText, Menu, AppBar, Toolbar, CssBaseline, Divider,ListSubheader, Link} from '@material-ui/core'
+import {Grid, Box, Typography, MenuItem, Checkbox, ListItemText, Menu, AppBar, Toolbar, CssBaseline, Divider,ListSubheader, Link, Button, Fade, FormLabel, FormControl, FormGroup, FormControlLabel} from '@material-ui/core'
 import {Add, Clear} from '@material-ui/icons';
 import { ThemeProvider } from '@material-ui/styles';
 
 import reducer from '../reducers'
-
-import PVBuilder from '../components/PVBuilder'
 import PropsController from '../components/PropsController'
 
 import Engine from '../components/Engine'
 import OutputPanel from '../components/OutputPanel'
 import TimeSeriesBox from '../components/TimeSeriesBox/TimeSeriesBox'
+import PVBox from '../components/PVBox/PVBox'
 
 import { createStore } from 'redux';
 import { Provider} from 'reactive-react-redux';
@@ -74,9 +73,14 @@ const useStyles= makeStyles(theme =>({
     // width: `calc(100vw * 7/ 12  - ${theme.spacing(5)}px)`,
     height: `calc((100vw * 7/ 12  - ${theme.spacing(5)}px) / 2 )`,
     backgroundColor: theme.palette.background.paper,
-  },title: {
+  },
+  title: {
     flexGrow: 1,
   },
+  addBox: {
+    textTransform:'inherit', 
+    color:'#bdbdbd', 
+  }
 }))
 
 const store = createStore(reducer)
@@ -84,30 +88,79 @@ const store = createStore(reducer)
 const Simulator =() =>{
   const classes = useStyles()
   
-  const [PVpropTypes, setPVpropTypes] = useState({
-    'RA': {name: 'Right Atrium', selected: false},
-    'LA': {name: 'Left Atrium', selected: false},
-    'RV': {name: 'Right Ventricle', selected: false},
-    'LV': {name: 'Left Ventricle', selected: false},
-  });
-  const [propTypes, setPropTypes] = useState({
-    'Imv': { name: 'Mitral Valve Flow', selected: true, divider: null},
-    'Iasp': { name: 'Aortic Valve Flow', selected: false, divider: null},
-    'Itv': { name: 'Tricuspid Valve Flow', selected: false, divider: null},
-    'Iapp': { name: 'Pulmonary Valve Flow', selected: false, divider: null},
-    'Qas_prox': { name: 'Aorta', selected: false, divider: 'Cas_prox'},
-    'Qap_prox': { name: 'Pulmonary Artery', selected: false, divider: 'Cap_prox'},
-    'Plv': { name: 'Left Ventricle', selected: false, divider: null},
-    'Pla': { name: 'Left Atrium', selected: false, divider: null},
-    'Prv': { name: 'Right Ventricle', selected: false, divider: null},
-    'Pra': { name: 'Right Artrium', selected: false, divider: null},
-  });
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  // const [PVpropTypes, setPVpropTypes] = useState({
+  //   'RA': {name: 'Right Atrium', selected: false},
+  //   'LA': {name: 'Left Atrium', selected: false},
+  //   'RV': {name: 'Right Ventricle', selected: false},
+  //   'LV': {name: 'Left Ventricle', selected: false},
+  // });
+  // const [propTypes, setPropTypes] = useState({
+  //   'Imv': { name: 'Mitral Valve Flow', selected: true, divider: null},
+  //   'Iasp': { name: 'Aortic Valve Flow', selected: false, divider: null},
+  //   'Itv': { name: 'Tricuspid Valve Flow', selected: false, divider: null},
+  //   'Iapp': { name: 'Pulmonary Valve Flow', selected: false, divider: null},
+  //   'Qas_prox': { name: 'Aorta', selected: false, divider: 'Cas_prox'},
+  //   'Qap_prox': { name: 'Pulmonary Artery', selected: false, divider: 'Cap_prox'},
+  //   'Plv': { name: 'Left Ventricle', selected: false, divider: null},
+  //   'Pla': { name: 'Left Atrium', selected: false, divider: null},
+  //   'Prv': { name: 'Right Ventricle', selected: false, divider: null},
+  //   'Pra': { name: 'Right Artrium', selected: false, divider: null},
+  // });
+
+  const [newItems, setNewItems] = useState({'LA': false,'LV': false,'RA': false,'RV': false,'Imv': false ,'Iasp': false ,'Itv': false ,'Iapp': false ,'Qas_prox': false ,'Qap_prox': false ,'Plv': false ,'Pla': false ,'Prv': false ,'Pra': false});
+  const {LA, LV, RA, RV, Imv, Iasp, Itv, Iapp, Qas_prox, Qap_prox, Plv, Pla, Prv, Pra} = newItems
+  // const plotBoxes = useRef([])
+  // const plotPVBoxes = useRef([])
+  const [plotBoxes, setPlotBoxes] = useState([]);
+  const [plotPVBoxes, setPlotPVBoxes] = useState([]);
+
+  const [visible, setVisible] = useState(false);
+
+  const handleChangeItem = name => e => {
+    setNewItems(prev => ({...prev, [name]:e.target.checked}))
+  }
+  const handleChangeItemExclusive = name => e => {
+    setNewItems(prev => {
+      const newState  = {...prev}
+      Object.keys(prev).forEach(k=>{newState[k]=false})
+      return {...newState, [name]:e.target.checked}
+    })
+  }
+  const removePlotBox = (index, isPV=false)=> e => {
+    if(isPV){
+      setPlotPVBoxes(prev=>{
+        const newBoxes = [...prev]
+        newBoxes[index]= null; 
+        return newBoxes
+      })
+    }else{
+      setPlotBoxes(prev=>{
+        const newBoxes = [...prev]
+        newBoxes[index]= null; 
+        return newBoxes
+      })
+    }
+  }
+  const addPlotBox = e =>{
+    const initialKeys = []
+    Object.keys(newItems).forEach(k =>{if(newItems[k]){initialKeys.push(k)}})
+    if(initialKeys.length==0){setVisible(false); return}
+    if(['LA','LV','RA','RV'].some(x=>x==initialKeys[0])){
+      const ind = plotPVBoxes.length
+      setPlotPVBoxes(prev=>[...prev, <PVBox chamber={initialKeys[0]} remove={removePlotBox(ind,true)}/>])
+    }else{
+      const ind = plotBoxes.length
+      setPlotBoxes(prev=>[...prev,<TimeSeriesBox initialKeys={initialKeys} remove={removePlotBox(ind,false)}/>])
+    }
+    setNewItems({'LA': false,'LV': false,'RA': false,'RV': false,'Imv': false ,'Iasp': false ,'Itv': false ,'Iapp': false ,'Qas_prox': false ,'Qap_prox': false ,'Plv': false ,'Pla': false ,'Prv': false ,'Pra': false})
+    setVisible(false)
+  }
+  console.log( plotBoxes.length)
 
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <Box display='flex'>
+        <Box display='flex' position='relative'>
           <CssBaseline/>
           <AppBar position='fixed' elevation={0} color ="inherit" style={{borderBottom:"1px solid #e0e0e0"}}>
             <Toolbar disableGutters={true} variant="dense">
@@ -122,77 +175,9 @@ const Simulator =() =>{
                     </Box>
                   </Box>
                 </Grid>
-                {/* <Grid item xs={1}>
-                  <Box display="flex" justifyContent="flex-end" height={1}>
-                  </Box>
-                </Grid> */}
                 <Grid item xs={9}>
                   <Box color='grey.600' px={4}>
                     <Engine/>
-                    <Add fontSize='large' aria-controls="simple-menu" aria-haspopup= {true} onClick={e=>setAnchorEl(e.currentTarget)}
-                          style={{cursor: 'pointer'}} 
-                      />
-                    <Menu
-                      id="simple-menu"
-                      anchorEl={anchorEl}
-                      open={Boolean(anchorEl)}
-                      onClose={()=>setAnchorEl(null)}
-                    >
-                      <ListSubheader>PV Loop</ListSubheader>
-                      {Object.keys(PVpropTypes).map(key =>{
-                        const clickHandler = e=>{
-                          e.preventDefault();
-                          setPVpropTypes(PVpropTypes=>{
-                            const newPVPropTypes = {...PVpropTypes}
-                            newPVPropTypes[key].selected = !PVpropTypes[key].selected 
-                            return newPVPropTypes
-                          })
-                        }
-                        return (
-                          <MenuItem key={key} onClick={clickHandler}>
-                            <Checkbox checked ={PVpropTypes[key].selected} color='primary'></Checkbox>
-                            <ListItemText>{PVpropTypes[key].name}</ListItemText>
-                          </MenuItem>
-                          )
-                      })}
-                      <Divider/>
-                      <ListSubheader>Flow</ListSubheader>
-                      {Object.keys(propTypes).slice(0,4).map(key =>{
-                        const clickHandler = e=>{
-                          e.preventDefault();
-                          setPropTypes(propTypes=>{
-                            const newPropTypes = {...propTypes}
-                            newPropTypes[key].selected = !propTypes[key].selected 
-                            return newPropTypes
-                          })
-                        }
-                        return (
-                          <MenuItem key={key} onClick={clickHandler}>
-                            <Checkbox checked ={propTypes[key].selected} color='primary'></Checkbox>
-                            <ListItemText>{propTypes[key].name}</ListItemText>
-                          </MenuItem>
-                          )
-                      })} 
-                      <Divider/>
-                      <ListSubheader>Pressure</ListSubheader>
-                      {Object.keys(propTypes).slice(4).map(key =>{
-                        const clickHandler = e=>{
-                          e.preventDefault();
-                          setPropTypes(propTypes=>{
-                            const newPropTypes = {...propTypes}
-                            newPropTypes[key].selected = !propTypes[key].selected 
-                            return newPropTypes
-                          })
-                        }
-                        return (
-                          <MenuItem key={key} onClick={clickHandler}>
-                            <Checkbox checked ={propTypes[key].selected} color='primary'></Checkbox>
-                            <ListItemText>{propTypes[key].name}</ListItemText>
-                          </MenuItem>
-                          )
-                      })}                         
-                    </Menu>
-                  
                   </Box>                       
                 </Grid>
               </Grid>
@@ -207,68 +192,122 @@ const Simulator =() =>{
                 </Box>
               </Grid>
               <Grid item xs={7} className={classes.mainContainer} >
-                <Box my={1}>
-                  <Grid container spacing={1}>
-                    { 
-                      Object.keys(PVpropTypes).map((key,index) => {
-                      if(!PVpropTypes[key].selected){
-                        return null
-                      }else{
-                        return (
-                        <Grid item xs={6} key={key} className={classes.withBoxShadow}>
-                          <Box className={classes.halfBox} px ={2} pt={2} pb={-1} position='relative' >
-                            <Box lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={70} top={3}><Typography variant ='overline'>{PVpropTypes[key].name}</Typography></Box>
-                            <Box color="text.secondary" position='absolute' zIndex={3} right={10} top={5} >
-                              <Clear fontSize='small' aria-controls="simple-menu" aria-haspopup= {true}  style={{cursor: 'pointer'}}
-                                  onClick={()=>{setPVpropTypes(PVpropTypes=>{
-                                    const newPVPropTypes = {...PVpropTypes}
-                                    newPVPropTypes[key].selected = false
-                                    return newPVPropTypes
-                                  })}}
-                              />
-                            </Box>
-                            <PVBuilder chamber={key}/>
+                <Box >
+                  <Grid container>
+                    { plotPVBoxes.map(el => el) }
+                    { plotBoxes.map(el => el) }
+                    <Grid item xs={12}>
+                      <Box mx={5} my={3} display={visible? 'none': 'flex'}>
+                        <Button fullWidth variant='outlined' className={classes.addBox} onClick={()=>{setVisible(prev=>!prev)}} style={{border:'none'}}>
+                          <Box py={2} alignItems="center" >
+                            <Add fontSize='large' style={{marginRight:'8px'}}/>
+                            <Typography variant='h6'>New Plotting Area</Typography>    
+                          </Box>                            
+                        </Button>
+                      </Box>
+                      <Fade in={visible}>
+                        <Box m={2} borderRadius="borderRadius" border={1} borderColor="grey.400" color='grey.800' >
+                          <Grid container>
+                            <Grid item xs={4}>
+                              <Box my={2} display='flex' justifyContent="center">
+                                <FormControl disabled = {[Imv, Iasp, Itv, Iapp, Qas_prox, Qap_prox, Plv, Pla, Prv, Pra].some(x=>x)}>
+                                  <FormLabel>PV Loop</FormLabel>
+                                  <FormGroup>
+                                    <FormControlLabel 
+                                      control= {<Checkbox color='primary' checked={LA} onChange={handleChangeItemExclusive('LA')}/>}
+                                      label = 'Left Atrium'
+                                    />
+                                    <FormControlLabel
+                                      control= {<Checkbox color='primary' checked={LV} onChange={handleChangeItemExclusive('LV')}/>}
+                                      label = 'Left Ventricle'
+                                    />
+                                    <FormControlLabel
+                                      control= {<Checkbox color='primary' checked={RA} onChange={handleChangeItemExclusive('RA')}/>}
+                                      label = 'Right Atrium'
+                                    />
+                                    <FormControlLabel
+                                      control= {<Checkbox color='primary' checked={RV} onChange={handleChangeItemExclusive('RV')}/>}
+                                      label = 'Right Ventricle'
+                                    />                                        
+                                  </FormGroup>
+                                </FormControl>
+                              </Box>
+                            </Grid>
+                            <Grid item xs={4}>
+                              <Box my={2} mx={1} display='flex' justifyContent="center">
+                                <FormControl disabled ={[LA, LV, RA, RV, Qas_prox, Qap_prox, Plv, Pla, Prv, Pra].some(x=>x)}>                              
+                                  <FormLabel>Flow</FormLabel>
+                                  <FormGroup>
+                                    <FormControlLabel
+                                      control= {<Checkbox color='primary' checked={Imv} onChange={handleChangeItem('Imv')}/>}
+                                      label = 'Mitral Valve'
+                                    />
+                                    <FormControlLabel
+                                      control= {<Checkbox color='primary' checked={Iasp} onChange={handleChangeItem('Iasp')}/>}
+                                      label = 'Aortic Valve'
+                                    />
+                                    <FormControlLabel
+                                      control= {<Checkbox color='primary' checked={Itv} onChange={handleChangeItem('Itv')}/>}
+                                      label = 'Tricuspid Valve'
+                                    />
+                                    <FormControlLabel
+                                      control= {<Checkbox color='primary' checked={Iapp} onChange={handleChangeItem('Iapp')}/>}
+                                      label = 'Pulmonary Valve'
+                                    />                                        
+                                  </FormGroup>
+                                </FormControl>
+                              </Box>
+                            </Grid>
+                            <Grid item xs={4}>
+                              <Box my={2} display='flex' justifyContent="center">
+                                <FormControl disabled={[LA, LV, RA, RV, Imv, Iasp, Itv, Iapp].some(x=>x)}>
+                                  <FormLabel>Pressure</FormLabel>
+                                  <FormGroup>
+                                    <FormControlLabel
+                                      control= {<Checkbox color='primary' checked={Qas_prox} onChange={handleChangeItem('Qas_prox')}/>}
+                                      label = 'Aorta'
+                                    />
+                                    <FormControlLabel
+                                      control= {<Checkbox color='primary' checked={Qap_prox} onChange={handleChangeItem('Qap_prox')}/>}
+                                      label = 'Pulmonary'
+                                    />
+                                    <FormControlLabel
+                                      control= {<Checkbox color='primary' checked={Plv} onChange={handleChangeItem('Plv')}/>}
+                                      label = 'Left Ventricle'
+                                    />
+                                    <FormControlLabel
+                                      control= {<Checkbox color='primary' checked={Pla} onChange={handleChangeItem('Pla')}/>}
+                                      label = 'Left Atrium'
+                                    />
+                                    <FormControlLabel
+                                      control= {<Checkbox color='primary' checked={Prv} onChange={handleChangeItem('Prv')}/>}
+                                      label = 'Right Ventricle'
+                                    />
+                                    <FormControlLabel
+                                      control= {<Checkbox color='primary' checked={Pra} onChange={handleChangeItem('Pra')}/>}
+                                      label = 'Right Atrium'
+                                    />                                        
+                                  </FormGroup>
+                                </FormControl>
+                              </Box>
+                            </Grid>
+                          </Grid>
+                          <Divider/>
+                          <Box display='flex' justifyContent="flex-end" alignItems="center" m={1}>
+                            <Button color='primary' variant='text' onClick={()=>{setVisible(prev=>!prev)}}>cancel</Button>
+                            <Button color='primary' variant='text' onClick={addPlotBox}>ok</Button>                                    
                           </Box>
-                        </Grid>
-                        )}
-                      }
-                    )}
-                    {/* { 
-                      Object.keys(propTypes).map((key,index) => {
-                      if(!propTypes[key].selected){
-                        return null
-                      }else{
-                        return (
-                        <Grid item xs={12} key={key}>
-                          <Box className={classes.fullWidthBox} mr={-1} px ={2} pt={2} pb={-1} position='relative' >
-                            <Box lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={70} top={3}><Typography variant ='overline'>{propTypes[key].name}</Typography></Box>
-                            <Box color="text.secondary" position='absolute' zIndex={3} right={15} top={5} >
-                              <Clear fontSize='small' aria-controls="simple-menu" aria-haspopup= {true}  style={{cursor: 'pointer'}}
-                                  onClick={()=>{setPropTypes(propTypes=>{
-                                    const newPropTypes = {...propTypes}
-                                    newPropTypes[key].selected = false
-                                    return newPropTypes
-                                  })}}
-                              />
-                            </Box>
-                            <PlotFlow name={key} divider={propTypes[key].divider}/>
-                          </Box>
-                        </Grid>
-                        )}
-                      }
-                    )}                                                              */}
-                    <Grid item xs = {12}>
-                      {/* <Box className={classes.fullWidthBox} mr={-1} px ={2} pt={2} pb={-1} position='relative' >
-                        <PlotFlow keys={['Qas_prox', 'Plv', 'Pla']}/>
-                      </Box> */}
-                      <TimeSeriesBox/>
-                    </Grid>
+                        </Box>
+                      </Fade>
+                    </Grid>                    
                   </Grid>
                 </Box>
               </Grid>
               <Grid item xs={2}>
-                <Box className={classes.sideContainer}  color='grey.600' pt={1}>
-                  <OutputPanel/>
+                <Box className={classes.sideContainer}  color='grey.600' >
+                  <Box pt={1} height={1} bgcolor='background.paper' style={{marginLeft:'3px'}}>
+                    <OutputPanel/>
+                  </Box>
                 </Box>
               </Grid>
             </Grid>
@@ -560,3 +599,92 @@ export default Simulator
   // const [CVProps, setCVProps] = useState(DefaultPrperty);
 
 
+// { 
+//   Object.keys(PVpropTypes).map((key,index) => {
+//   if(!PVpropTypes[key].selected){
+//     return null
+//   }else{
+//     return (
+//     <Grid item xs={6} key={key} className={classes.withBoxShadow}>
+//       <Box className={classes.halfBox} px ={2} pt={2} pb={-1} position='relative' style={{margin:'2px'}}>
+//         <Box lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={70} top={3}><Typography variant ='overline'>{PVpropTypes[key].name}</Typography></Box>
+//         <Box color="text.secondary" position='absolute' zIndex={3} right={10} top={5} >
+//           <Clear fontSize='small' aria-controls="simple-menu" aria-haspopup= {true}  style={{cursor: 'pointer'}}
+//               onClick={()=>{setPVpropTypes(PVpropTypes=>{
+//                 const newPVPropTypes = {...PVpropTypes}
+//                 newPVPropTypes[key].selected = false
+//                 return newPVPropTypes
+//               })}}
+//           />
+//         </Box>
+//         <PVBuilder chamber={key}/>
+//       </Box>
+//     </Grid>
+//     )}
+//   }
+// )} 
+
+//   {/* <Add fontSize='large' aria-controls="simple-menu" aria-haspopup= {true} onClick={e=>setAnchorEl(e.currentTarget)}
+//         style={{cursor: 'pointer'}} 
+//     />
+//   <Menu
+//     id="simple-menu"
+//     anchorEl={anchorEl}
+//     open={Boolean(anchorEl)}
+//     onClose={()=>setAnchorEl(null)}
+//   >
+//     <ListSubheader>PV Loop</ListSubheader>
+//     {Object.keys(PVpropTypes).map(key =>{
+//       const clickHandler = e=>{
+//         e.preventDefault();
+//         setPVpropTypes(PVpropTypes=>{
+//           const newPVPropTypes = {...PVpropTypes}
+//           newPVPropTypes[key].selected = !PVpropTypes[key].selected 
+//           return newPVPropTypes
+//         })
+//       }
+//       return (
+//         <MenuItem key={key} onClick={clickHandler}>
+//           <Checkbox checked ={PVpropTypes[key].selected} color='primary'></Checkbox>
+//           <ListItemText>{PVpropTypes[key].name}</ListItemText>
+//         </MenuItem>
+//         )
+//     })}
+//     <Divider/>
+//     <ListSubheader>Flow</ListSubheader>
+//     {Object.keys(propTypes).slice(0,4).map(key =>{
+//       const clickHandler = e=>{
+//         e.preventDefault();
+//         setPropTypes(propTypes=>{
+//           const newPropTypes = {...propTypes}
+//           newPropTypes[key].selected = !propTypes[key].selected 
+//           return newPropTypes
+//         })
+//       }
+//       return (
+//         <MenuItem key={key} onClick={clickHandler}>
+//           <Checkbox checked ={propTypes[key].selected} color='primary'></Checkbox>
+//           <ListItemText>{propTypes[key].name}</ListItemText>
+//         </MenuItem>
+//         )
+//     })} 
+//     <Divider/>
+//     <ListSubheader>Pressure</ListSubheader>
+//     {Object.keys(propTypes).slice(4).map(key =>{
+//       const clickHandler = e=>{
+//         e.preventDefault();
+//         setPropTypes(propTypes=>{
+//           const newPropTypes = {...propTypes}
+//           newPropTypes[key].selected = !propTypes[key].selected 
+//           return newPropTypes
+//         })
+//       }
+//       return (
+//         <MenuItem key={key} onClick={clickHandler}>
+//           <Checkbox checked ={propTypes[key].selected} color='primary'></Checkbox>
+//           <ListItemText>{propTypes[key].name}</ListItemText>
+//         </MenuItem>
+//         )
+//     })}                         
+//   </Menu>
+//  */}
