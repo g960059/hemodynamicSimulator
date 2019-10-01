@@ -1,5 +1,5 @@
 import React,{useEffect, useRef} from 'react';
-import {List, ListItem ,ListItemText} from '@material-ui/core'
+import {Box, List, ListItem ,ListItemText, Typography} from '@material-ui/core'
 import { useTrackedState } from 'reactive-react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -23,6 +23,9 @@ const useStyles= makeStyles(theme =>({
   multiline:{
     marginTop: 0,
     marginBottom: '8px'
+  },
+  mobileOutput:{
+    width: `calc(100vw - ${theme.spacing(1)}px )`,
   }
 }))
 
@@ -86,35 +89,90 @@ export default (props) => {
     
   }, [state.hemodynamicSeries])
   return (
-    <List dense classes={{root:classes.root}}>
-      <ListItem dense  classes={{dense: classes.dense}}>
-        <ListItemText primary='AoP' primaryTypographyProps={{variant:'h6', classes:{h6:classes.h6}}} secondary='mmHg' secondaryTypographyProps	={{variant: 'caption',display: 'block', classes:{root:classes.caption}}} classes={{multiline: classes.multiline}}/>
-        <ListItemText primary={outputs.current.AoP.max + '/'+ outputs.current.AoP.min} primaryTypographyProps={{variant:'h6'}}/>
-      </ListItem>
-      <ListItem dense  classes={{dense: classes.dense}}>
-        <ListItemText primary='PAP' primaryTypographyProps={{variant:'h6', classes:{h6:classes.h6}}} secondary='mmHg' secondaryTypographyProps	={{variant: 'caption',display: 'block', classes:{root:classes.caption}}} classes={{multiline: classes.multiline}}/>
-        <ListItemText primary={outputs.current.PAP.max + '/'+ outputs.current.PAP.min} primaryTypographyProps={{variant:'h6'}}/>
-      </ListItem>
-      <ListItem dense  classes={{dense: classes.dense}}>
-        <ListItemText primary='CVP' primaryTypographyProps={{variant:'h6', classes:{h6:classes.h6}}} secondary='mmHg' secondaryTypographyProps	={{variant: 'caption',display: 'block', classes:{root:classes.caption}}} classes={{multiline: classes.multiline}}/>
-        <ListItemText primary={outputs.current.CVP.max + '/'+ outputs.current.CVP.min} primaryTypographyProps={{variant:'h6'}}/>
-      </ListItem>
-      <ListItem dense  classes={{dense: classes.dense}}>
-        <ListItemText primary='SV' primaryTypographyProps={{variant:'h6', classes:{h6:classes.h6}}} secondary='ml' secondaryTypographyProps	={{variant: 'caption',display: 'block', classes:{root:classes.caption}}} classes={{multiline: classes.multiline}}/>
-        <ListItemText primary={outputs.current.Qlv.max- outputs.current.Qlv.min} primaryTypographyProps={{variant:'h6'}}/>
-      </ListItem>
-      <ListItem dense  classes={{dense: classes.dense}}>
-        <ListItemText primary='EF' primaryTypographyProps={{variant:'h6', classes:{h6:classes.h6}}} secondary='%' secondaryTypographyProps	={{variant: 'caption',display: 'block', classes:{root:classes.caption}}} classes={{multiline: classes.multiline}}/>
-        <ListItemText primary={((outputs.current.Qlv.max- outputs.current.Qlv.min)*100 / outputs.current.Qlv.max).toFixed()} primaryTypographyProps={{variant:'h6'}}/>
-      </ListItem>  
-      <ListItem dense  classes={{dense: classes.dense}}>
-        <ListItemText primary='CO' primaryTypographyProps={{variant:'h6', classes:{h6:classes.h6}}} secondary='L/min' secondaryTypographyProps	={{variant: 'caption',display: 'block', classes:{root:classes.caption}}} classes={{multiline: classes.multiline}}/>
-        <ListItemText primary={((outputs.current.Qlv.max- outputs.current.Qlv.min)*HR/1000).toFixed(2)} primaryTypographyProps={{variant:'h6'}}/>
-      </ListItem>
-      <ListItem dense  classes={{dense: classes.dense}}>
-        <ListItemText primary='PCWP' primaryTypographyProps={{variant:'h6', classes:{h6:classes.h6}}} secondary='mmHg' secondaryTypographyProps	={{variant: 'caption',display: 'block', classes:{root:classes.caption}}} classes={{multiline: classes.multiline}}/>
-        <ListItemText primary={(outputs.current.PCWP.max /3 + outputs.current.PCWP.min*2/3).toFixed()} primaryTypographyProps={{variant:'h6'}}/>
-      </ListItem>            
-    </List>
+  <>
+    <Box display={{ xs: 'none', sm: 'block' }}>
+      <List dense classes={{root:classes.root}}>
+        <ListItem dense  classes={{dense: classes.dense}}>
+          <ListItemText primary='AoP' primaryTypographyProps={{variant:'h6', classes:{h6:classes.h6}}} secondary='mmHg' secondaryTypographyProps	={{variant: 'caption',display: 'block', classes:{root:classes.caption}}} classes={{multiline: classes.multiline}}/>
+          <ListItemText primary={outputs.current.AoP.max + '/'+ outputs.current.AoP.min} primaryTypographyProps={{variant:'h6'}}/>
+        </ListItem>
+        <ListItem dense  classes={{dense: classes.dense}}>
+          <ListItemText primary='PAP' primaryTypographyProps={{variant:'h6', classes:{h6:classes.h6}}} secondary='mmHg' secondaryTypographyProps	={{variant: 'caption',display: 'block', classes:{root:classes.caption}}} classes={{multiline: classes.multiline}}/>
+          <ListItemText primary={outputs.current.PAP.max + '/'+ outputs.current.PAP.min} primaryTypographyProps={{variant:'h6'}}/>
+        </ListItem>
+        <ListItem dense  classes={{dense: classes.dense}}>
+          <ListItemText primary='CVP' primaryTypographyProps={{variant:'h6', classes:{h6:classes.h6}}} secondary='mmHg' secondaryTypographyProps	={{variant: 'caption',display: 'block', classes:{root:classes.caption}}} classes={{multiline: classes.multiline}}/>
+          <ListItemText primary={outputs.current.CVP.max + '/'+ outputs.current.CVP.min} primaryTypographyProps={{variant:'h6'}}/>
+        </ListItem>
+        <ListItem dense  classes={{dense: classes.dense}}>
+          <ListItemText primary='SV' primaryTypographyProps={{variant:'h6', classes:{h6:classes.h6}}} secondary='ml' secondaryTypographyProps	={{variant: 'caption',display: 'block', classes:{root:classes.caption}}} classes={{multiline: classes.multiline}}/>
+          <ListItemText primary={outputs.current.Qlv.max- outputs.current.Qlv.min} primaryTypographyProps={{variant:'h6'}}/>
+        </ListItem>
+        <ListItem dense  classes={{dense: classes.dense}}>
+          <ListItemText primary='EF' primaryTypographyProps={{variant:'h6', classes:{h6:classes.h6}}} secondary='%' secondaryTypographyProps	={{variant: 'caption',display: 'block', classes:{root:classes.caption}}} classes={{multiline: classes.multiline}}/>
+          <ListItemText primary={((outputs.current.Qlv.max- outputs.current.Qlv.min)*100 / outputs.current.Qlv.max).toFixed()} primaryTypographyProps={{variant:'h6'}}/>
+        </ListItem>  
+        <ListItem dense  classes={{dense: classes.dense}}>
+          <ListItemText primary='CO' primaryTypographyProps={{variant:'h6', classes:{h6:classes.h6}}} secondary='L/min' secondaryTypographyProps	={{variant: 'caption',display: 'block', classes:{root:classes.caption}}} classes={{multiline: classes.multiline}}/>
+          <ListItemText primary={((outputs.current.Qlv.max- outputs.current.Qlv.min)*HR/1000).toFixed(2)} primaryTypographyProps={{variant:'h6'}}/>
+        </ListItem>
+        <ListItem dense  classes={{dense: classes.dense}}>
+          <ListItemText primary='PCWP' primaryTypographyProps={{variant:'h6', classes:{h6:classes.h6}}} secondary='mmHg' secondaryTypographyProps	={{variant: 'caption',display: 'block', classes:{root:classes.caption}}} classes={{multiline: classes.multiline}}/>
+          <ListItemText primary={(outputs.current.PCWP.max /3 + outputs.current.PCWP.min*2/3).toFixed()} primaryTypographyProps={{variant:'h6'}}/>
+        </ListItem>            
+      </List>
+    </Box>
+    <Box display={{ xs: 'flex', sm: 'none' }} className={classes.mobileOutput} px={1} py={2}>
+      <Box display='flex' flexDirection="column" alignItems='center' px={2}>
+        <Box>
+          <Typography variant='h5' style={{display: 'inline'}}>AoP</Typography>
+          <Typography variant='caption' style={{display:'inline', color:'gray'}}>mmHg</Typography>
+        </Box>
+        <Typography variant='h5'>{outputs.current.AoP.max + '/'+ outputs.current.AoP.min}</Typography>
+      </Box>
+      <Box display='flex' flexDirection="column" alignItems='center' px={2}>
+        <Box>
+          <Typography variant='h5' style={{display: 'inline'}}>PAP</Typography>
+          <Typography variant='caption' style={{display:'inline', color:'gray'}}>mmHg</Typography>
+        </Box>
+        <Typography variant='h5'>{outputs.current.PAP.max + '/'+ outputs.current.PAP.min}</Typography>
+      </Box>
+      <Box display='flex' flexDirection="column" alignItems='center' px={2}>
+        <Box>
+          <Typography variant='h5' style={{display: 'inline'}}>CVP</Typography>
+          <Typography variant='caption' style={{display:'inline', color:'gray'}}>mmHg</Typography>
+        </Box>
+        <Typography variant='h5'>{outputs.current.CVP.max + '/'+ outputs.current.CVP.min}</Typography>
+      </Box>
+      <Box display='flex' flexDirection="column" alignItems='center' px={2}>
+        <Box>
+          <Typography variant='h5' style={{display: 'inline'}}>SV</Typography>
+          <Typography variant='caption' style={{display:'inline', color:'gray'}}>ml</Typography>
+        </Box>
+        <Typography variant='h5'>{outputs.current.Qlv.max- outputs.current.Qlv.min}</Typography>
+      </Box>
+      <Box display='flex' flexDirection="column" alignItems='center' px={2}>
+        <Box>
+          <Typography variant='h5' style={{display: 'inline'}}>EF</Typography>
+          <Typography variant='caption' style={{display:'inline', color:'gray'}}>%</Typography>
+        </Box>
+        <Typography variant='h5'>{((outputs.current.Qlv.max- outputs.current.Qlv.min)*100 / outputs.current.Qlv.max).toFixed()}</Typography>
+      </Box>
+      <Box display='flex' flexDirection="column" alignItems='center' px={2}>
+        <Box>
+          <Typography variant='h5' style={{display: 'inline'}}>CO</Typography>
+          <Typography variant='caption' style={{display:'inline', color:'gray'}}>L/min</Typography>
+        </Box>
+        <Typography variant='h5'>{((outputs.current.Qlv.max- outputs.current.Qlv.min)*HR/1000).toFixed(2)}</Typography>
+      </Box>
+      <Box display='flex' flexDirection="column" alignItems='center' px={2}>
+        <Box>
+          <Typography variant='h5' style={{display: 'inline'}}>PCWP</Typography>
+          <Typography variant='caption' style={{display:'inline', color:'gray'}}>mmHg</Typography>
+        </Box>
+        <Typography variant='h5'>{(outputs.current.PCWP.max /3 + outputs.current.PCWP.min*2/3).toFixed()}</Typography>
+      </Box>
+    </Box>
+  </>
   )
 }

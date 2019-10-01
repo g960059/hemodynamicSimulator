@@ -10,7 +10,12 @@ const useStyles= makeStyles(theme =>({
     boxShadow:'1px 1px 2px 0px rgba(0,0,0,0.08)'
   },
   halfBox: {
-    height: `calc((100vw * 7/ 12 / 2 - ${theme.spacing(1)}px * 3) *3 / 4 )`,
+    [theme.breakpoints.up('sm')]: {
+      height: `calc((100vmax * 7/ 12 / 2 - ${theme.spacing(1)}px * 3) *3 / 4 )`,
+    },
+    [theme.breakpoints.down('xs')]: {
+      height: `calc((100vmax * 7/ 12 / 2 - ${theme.spacing(1)}px * 3) *3 / 2 )`,
+    },
     backgroundColor: theme.palette.background.paper,
   },
 }))
@@ -19,7 +24,7 @@ export default (props) => {
   const classes = useStyles()
   console.log('PVPropSettings[props.chamber]: ',PVPropSettings[props.chamber])
   return (
-    <Grid item xs={6} className={classes.withBoxShadow}>
+    <Grid item xs={12} sm={6} className={classes.withBoxShadow}>
       <Box className={classes.halfBox} px ={2} pt={2} pb={-1} position='relative' style={{margin:'2px'}}>
         <Box lineHeight={0} color="text.secondary"  position='absolute' zIndex={3} left={70} top={3}><Typography variant ='overline'>{PVPropSettings[props.chamber].name}</Typography></Box>
         <Box position='absolute' zIndex={3} right={-3} top={-6} >

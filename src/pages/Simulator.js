@@ -1,7 +1,8 @@
 import React, {useState,useEffect} from 'react';
-import { makeStyles,createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
-import {Grid, Box, Typography, MenuItem, Checkbox, ListItemText, Menu, AppBar, Toolbar, CssBaseline, Divider,ListSubheader, Link, Button, Fade, FormLabel, FormControl, FormGroup, FormControlLabel} from '@material-ui/core'
-import {Add, Clear} from '@material-ui/icons';
+import { makeStyles,createMuiTheme, responsiveFontSizes} from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery'
+import {Grid, Box, Typography, Checkbox,Hidden, AppBar, Toolbar, CssBaseline, Divider, Link, Button, Fade, FormLabel, FormControl, FormGroup, FormControlLabel} from '@material-ui/core'
+import {Add} from '@material-ui/icons';
 import { ThemeProvider } from '@material-ui/styles';
 
 import reducer from '../reducers'
@@ -34,45 +35,24 @@ theme.shadows[1] = '0px 1px 5px 1px rgba(0,0,0,0.1)'
 
 const useStyles= makeStyles(theme =>({
   toolbar: {
-    height: `calc(${theme.mixins.toolbar.minHeight}px - 8px)`
+    height: `calc(${theme.mixins.toolbar.minHeight}px)`
   },
   content: {
     flexGrow: 1
   },
-  paper: {
-    padding: theme.spacing(2),
-  },
   sideContainer: {
-    height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`,
+    [theme.breakpoints.up('sm')]: {
+      height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`,
+    },
     overflowY: 'scroll',
     backgroundColor: theme.palette.background.default,
     // borderRight: '1px solid #e6e6e9'
   },
   mainContainer: {
-    height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`,
+    [theme.breakpoints.up('sm')]: {
+      height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px)`,
+    },
     overflowY: 'scroll',
-  },
-  halfBox: {
-    // maxWidth: `calc(100vw * 7/ 12 / 2 - ${theme.spacing(0)}px * 3)`,
-    height: `calc((100vw * 7/ 12 / 2 - ${theme.spacing(1)}px * 3) *3 / 4 )`,
-    backgroundColor: theme.palette.background.paper,
-  },
-  withBoxShadow: {
-    boxShadow:'1px 1px 2px 0px rgba(0,0,0,0.08)'
-  },
-  controlBar: {
-    borderBottom: '1px solid #e0e0e0'
-  },
-  fullWidthBox: {
-    // maxWidth: `calc(100vw * 7/ 12  - ${theme.spacing(0)}px)`,
-    height: `calc(100vw * 2/ 12 )`,
-    backgroundColor: theme.palette.background.paper,
-    boxShadow:'1px 1px 2px 0px rgba(0,0,0,0.08)',
-  },
-  fullBox: {
-    // width: `calc(100vw * 7/ 12  - ${theme.spacing(5)}px)`,
-    height: `calc((100vw * 7/ 12  - ${theme.spacing(5)}px) / 2 )`,
-    backgroundColor: theme.palette.background.paper,
   },
   title: {
     flexGrow: 1,
@@ -83,19 +63,31 @@ const useStyles= makeStyles(theme =>({
   },
   titleStyle:{
     fontFamily: ' Meiryo',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    marginLeft: theme.spacing(3)
+  },
+  gridOrder1:{
+    [theme.breakpoints.down('xs')]: {
+      order: 1,
+    },
+  },
+  gridOrder2:{
+    [theme.breakpoints.down('xs')]: {
+      order: 2,
+    },
+  },
+  gridOrder3:{
+    [theme.breakpoints.down('xs')]: {
+      order: 3,
+    },
   }
-  // secondaryText:{
-  //   color:theme.palette.secondary.main
-  // }
 }))
 
 const store = createStore(reducer)
 
 const Simulator =() =>{
   const classes = useStyles()
-  
-
+  const matches = useMediaQuery(theme.breakpoints.up('sm'),{noSsr: true});
   const [newItems, setNewItems] = useState({'LA': false,'LV': false,'RA': false,'RV': false,'Imv': false ,'Iasp': false ,'Itv': false ,'Iapp': false ,'AoP': false ,'PAP': false ,'Plv': false ,'Pla': false ,'Prv': false ,'Pra': false});
   const {LA, LV, RA, RV, Imv, Iasp, Itv, Iapp, AoP, PAP, Plv, Pla, Prv, Pra} = newItems
 
@@ -144,8 +136,13 @@ const Simulator =() =>{
     setVisible(false)
   }
   useEffect(() => {
-    setPlotPVBoxes([<PVBox chamber={'LA'} remove={removePlotBox(0,true)}/>,<PVBox chamber={'LV'} remove={removePlotBox(1,true)}/>])
-    setPlotBoxes([<TimeSeriesBox initialKeys={['AoP','Pla','Plv']} remove={removePlotBox(0,false)}/>])
+    if(matches){
+      setPlotPVBoxes([<PVBox chamber={'LA'} remove={removePlotBox(0,true)}/>,<PVBox chamber={'LV'} remove={removePlotBox(1,true)}/>])
+      setPlotBoxes([<TimeSeriesBox initialKeys={['AoP','Pla','Plv']} remove={removePlotBox(0,false)}/>])
+    }else{
+      setPlotPVBoxes([<PVBox chamber={'LV'} remove={removePlotBox(1,true)}/>])
+      setPlotBoxes([<TimeSeriesBox initialKeys={['AoP','Plv']} remove={removePlotBox(0,false)}/>])      
+    }
   }, []);
 
   return (
@@ -153,23 +150,31 @@ const Simulator =() =>{
       <Provider store={store}>
         <Box display='flex' position='relative'>
           <CssBaseline/>
-          <AppBar position='fixed' elevation={0} color ="inherit" style={{borderBottom:"1px solid #e0e0e0"}}>
+          <AppBar position='fixed' elevation={0} color ={matches ? "inherit": 'primary'} style={{borderBottom:"1px solid #e0e0e0"}}>
             <Toolbar disableGutters={true} variant="dense">
               <Grid container>
-                <Grid item xs={3}>
-                  <Box display="flex" justifyContent="flex-end" alignItems="center" height={1}>
-                    <Box flexGrow={1} display="flex" height={1} justifyContent="center" alignItems="center" mr={1}>
-                      <Link variant="h6" href="/" color ="inherit" underline='none' className={classes.titleStyle}>Cardiomator</Link>
+                <Hidden xsDown>
+                  <Grid item sm={3}>
+                    <Box display="flex" justifyContent="flex-end" alignItems="center" height={1}>
+                      <Box flexGrow={1} display="flex" height={1} justifyContent="center" alignItems="center" mr={1}>
+                        <Link variant="h6" href="/" color ="inherit" underline='none' className={classes.titleStyle}>Cardiomator</Link>
+                      </Box>
+                      <Box width='1px' height={1}>
+                        <Divider orientation="vertical" />
+                      </Box>
                     </Box>
-                    <Box width='1px' height={1}>
-                      <Divider orientation="vertical" />
+                  </Grid>
+                </Hidden>
+                <Grid item xs={12} sm={9}>
+                  <Box display='flex' justifyContent="flex-start" alignItems="center">
+                    <Box display={{ xs: 'flex', sm: 'none' }} justifyContent="flex-start" alignItems="center" mr={1} flexGrow={1}>
+                        <Link variant="h6" href="/" color ="inherit" underline='none' className={classes.titleStyle}>Cardiomator</Link>
                     </Box>
+                    <Box color={matches ? 'grey.600':'white'} px={4}>
+                      <Engine/>
+                    </Box>     
                   </Box>
-                </Grid>
-                <Grid item xs={9}>
-                  <Box color='grey.600' px={4}>
-                    <Engine/>
-                  </Box>                       
+                  
                 </Grid>
               </Grid>
             </Toolbar>
@@ -177,13 +182,13 @@ const Simulator =() =>{
           <Box className={classes.content} bgcolor="background.paper">
             <div className={classes.toolbar}/>
             <Grid container>
-              <Grid item xs={3}> 
+              <Grid item xs={12} sm={3}  className={classes.gridOrder3}> 
                 <Box className={classes.sideContainer} >             
                   <PropsController/>
                 </Box>
               </Grid>
-              <Grid item xs={7} className={classes.mainContainer} >
-                <Box >
+              <Grid item xs={12} sm={7}  className={classes.gridOrder2}>
+                <Box className={classes.mainContainer}>
                   <Grid container>
                     { plotPVBoxes.map(el => el) }
                     { plotBoxes.map(el => el) }
@@ -196,7 +201,7 @@ const Simulator =() =>{
                           </Box>                            
                         </Button>
                       </Box>
-                      <Fade in={visible}>
+                      <Fade in={visible} display={visible? 'block': 'none'}>
                         <Box m={2} borderRadius="borderRadius" border={1} color='grey.800' style={{borderColor:'#e0e0e0'}} >
                           <Grid container>
                             <Grid item xs={4}>
@@ -294,10 +299,13 @@ const Simulator =() =>{
                   </Grid>
                 </Box>
               </Grid>
-              <Grid item xs={2}>
+              <Grid item xs={12} sm={2} className={classes.gridOrder1}>
                 <Box className={classes.sideContainer}  color='grey.600' >
                   <Box pt={1} height={1} bgcolor='background.paper' style={{marginLeft:'3px'}}>
                     <OutputPanel/>
+                    <Hidden smUp>
+                      <Divider light variant='middle'></Divider>
+                    </Hidden>
                   </Box>
                 </Box>
               </Grid>

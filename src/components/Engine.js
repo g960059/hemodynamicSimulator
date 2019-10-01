@@ -1,9 +1,9 @@
 import React, {useState, useRef,useLayoutEffect} from 'react';
-
 import rk  from '../utils/RungeKutta/Rk4'
 import pv_func, {e} from '../utils/pvFunc'
 import mutationTimings from '../settings/mutationTimings'
-import {UPDATE_SERIES,RESET_SERIES,LOAD_SERIES,CALC_SERIES, UPDATE_PROPS, ShIFT_PROP_MUTATION} from '../actions'
+import {UPDATE_SERIES, UPDATE_PROPS, ShIFT_PROP_MUTATION} from '../actions'
+import {IconButton} from '@material-ui/core'
 
 import {PlayArrow,Pause} from '@material-ui/icons';
 
@@ -152,21 +152,22 @@ const Engine = props =>{
 
   if(speed!=0){
     return( 
-        <Pause fontSize='large'
-        style={{cursor:'pointer'}}
+      <IconButton style={{color:'inherit'}}
         onClick={()=>{
             Array.from(rafIdRef.current).map(id=>cancelAnimationFrame(id))
                   activeCallbacks.current.clear()
                   rafIdRef.current.clear()
                   setSpeed(0)
-          }} />
+          }}>
+        <Pause fontSize='large'/>
+      </IconButton>
       )
   }else{
-    return <PlayArrow  fontSize='large' 
-    style={{cursor:'pointer'}}
-    onClick={()=>{
-        setSpeed(0.5)
-      }}/>
+    return( 
+      <IconButton style={{color:'inherit'}} onClick={()=>{ setSpeed(0.5) }}>
+        <PlayArrow fontSize='large'/>
+      </IconButton>
+    )
   }
   // return (
   //       <Switch

@@ -9,7 +9,7 @@ import PlotFlow from './PlotFlow'
 const useStyles= makeStyles(theme =>({
   fullWidthBox: {
     // maxWidth: `calc(100vw * 7/ 12  - ${theme.spacing(0)}px)`,
-    height: `calc(100vw * 2/ 12 )`,
+    height: `calc(100vmax * 2/ 12 )`,
     backgroundColor: theme.palette.background.paper,
     boxShadow:'1px 1px 2px 0px rgba(0,0,0,0.08)',
   },
