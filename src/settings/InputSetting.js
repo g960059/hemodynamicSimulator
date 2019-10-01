@@ -130,7 +130,31 @@ const InputSetting = {
   },
   HR: {
     min: 30, max: 150, step: 1
-  }
+  },
+  Ravs:{
+    min: 0, max: 10000, step:1
+  }, 
+  Ravr:{
+    min: 0, max: 10000, step:1
+  }, 
+  Rmvr:{
+    min: 0, max: 10000, step:1
+  }, 
+  Rmvs:{
+    min: 0, max: 10000, step:1
+  }, 
+  Rpvr:{
+    min: 0, max: 10000, step:1
+  }, 
+  Rpvs:{
+    min: 0, max: 10000, step:1
+  }, 
+  Rtvr:{
+    min: 0, max: 10000, step:1
+  }, 
+  Rtvs:{
+    min: 0, max: 10000, step:1
+  },
 }
 
 export default InputSetting

@@ -25,7 +25,9 @@ const pvFunc = (t,[Qvs, Qas, Qap, Qvp, Qlv, Qla, Qrv, Qra, Qas_prox,Qap_prox],
       LV_Ees,LV_V0,LV_alpha,LV_beta,LV_Tmax,LV_tau,LV_AV_delay,
       LA_Ees,LA_V0,LA_alpha,LA_beta,LA_Tmax,LA_tau,LA_AV_delay,
       RV_Ees,RV_V0,RV_alpha,RV_beta,RV_Tmax,RV_tau,RV_AV_delay,
-      RA_Ees,RA_V0,RA_alpha,RA_beta,RA_Tmax,RA_tau,RA_AV_delay,HR} ={}
+      RA_Ees,RA_V0,RA_alpha,RA_beta,RA_Tmax,RA_tau,RA_AV_delay,HR,
+      Ravs, Ravr, Rmvr, Rmvs, Rpvr, Rpvs, Rtvr, Rtvs,
+    } ={}
     ,logger =null
     )=>{
     const Plv = P(Qlv,t, LV_Ees, LV_V0, LV_alpha, LV_beta, LV_Tmax, LV_tau, LV_AV_delay, HR)
@@ -35,29 +37,20 @@ const pvFunc = (t,[Qvs, Qas, Qap, Qvp, Qlv, Qla, Qrv, Qra, Qas_prox,Qap_prox],
 
     let Ias = (Qas/Cas-Qvs/Cvs)/Ras
     let Ics = (Qas_prox/Cas_prox-Qas/Cas)/Rcs  
-    let Imv = (Pla-Plv)/Rmv
+    let Imv = (Pla-Plv) > 0 ? (Pla-Plv)/(Rmv+Rmvs) : (Pla-Plv)/(Rmv+Rmvr)
     let Ivp = (Qvp/Cvp-Pla)/Rvp
     let Iap = (Qap/Cap-Qvp/Cvp)/Rap
     let Icp = (Qap_prox/Cap_prox-Qap/Cap)/Rcp
-    let Itv = (Pra-Prv)/Rtv
+    let Itv = (Pra-Prv)>0 ? (Pra-Prv)/(Rtv+Rtvs) : (Pra-Prv)/(Rtv+Rtvr)
     let Ivs = (Qvs/Cvs-Pra)/Rvs
-    let Iasp =(Plv-Qas_prox/Cas_prox)/Ras_prox
-    let Iapp =(Prv-Qap_prox/Cap_prox)/Rap_prox    
+    let Iasp =(Plv-Qas_prox/Cas_prox) > 0 ? (Plv-Qas_prox/Cas_prox)/(Ras_prox+Ravs) : (Plv-Qas_prox/Cas_prox)/(Ras_prox+Ravr)
+    let Iapp =(Prv-Qap_prox/Cap_prox) > 0 ? (Prv-Qap_prox/Cap_prox)/(Rap_prox+Rpvs) : (Prv-Qap_prox/Cap_prox)/(Rap_prox+Rpvr) 
     
-    if(Iasp < 0){
-      Iasp = 0
-    }
-    if(Iapp < 0){
-      Iapp = 0
-    }  
-    if(Imv < 0){
-      Imv = 0
-    }
-    if(Itv < 0){
-      Itv = 0
-    }
+    let AoP = Qas_prox/Cas_prox + Iasp*Ras_prox
+    let PAP = Qap_prox/Cap_prox + Iapp*Rap_prox
+   
     if(logger != null){
-      logger.push({t,Qvs, Qas, Qap, Qvp, Qlv, Qla, Qrv, Qra, Qas_prox,Qap_prox,Plv, Pla, Prv, Pra,Ias,Ics,Imv,Ivp,Iap,Icp,Itv,Ivs,Iasp,Iapp})
+      logger.push({t,Qvs, Qas, Qap, Qvp, Qlv, Qla, Qrv, Qra, Qas_prox,Qap_prox,Plv, Pla, Prv, Pra,Ias,Ics,Imv,Ivp,Iap,Icp,Itv,Ivs,Iasp,Iapp, AoP, PAP})
     }
     return [Ias-Ivs, Ics-Ias, Icp-Iap, Iap-Ivp, Imv-Iasp, Ivp-Imv, Itv-Iapp, Ivs-Itv, Iasp-Ics, Iapp-Icp]
 }

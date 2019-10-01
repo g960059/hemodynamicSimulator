@@ -52,5 +52,14 @@ export default {
 
   HR : 60,
   Volume: 1500, 
+
+  Ravr: 10000,
+  Ravs: 1,
+  Rmvr: 10000,
+  Rmvs: 1,
+  Rpvr: 10000,
+  Rpvs: 1,
+  Rtvr: 10000,
+  Rtvs: 1,
 }
 

@@ -88,29 +88,10 @@ const store = createStore(reducer)
 const Simulator =() =>{
   const classes = useStyles()
   
-  // const [PVpropTypes, setPVpropTypes] = useState({
-  //   'RA': {name: 'Right Atrium', selected: false},
-  //   'LA': {name: 'Left Atrium', selected: false},
-  //   'RV': {name: 'Right Ventricle', selected: false},
-  //   'LV': {name: 'Left Ventricle', selected: false},
-  // });
-  // const [propTypes, setPropTypes] = useState({
-  //   'Imv': { name: 'Mitral Valve Flow', selected: true, divider: null},
-  //   'Iasp': { name: 'Aortic Valve Flow', selected: false, divider: null},
-  //   'Itv': { name: 'Tricuspid Valve Flow', selected: false, divider: null},
-  //   'Iapp': { name: 'Pulmonary Valve Flow', selected: false, divider: null},
-  //   'Qas_prox': { name: 'Aorta', selected: false, divider: 'Cas_prox'},
-  //   'Qap_prox': { name: 'Pulmonary Artery', selected: false, divider: 'Cap_prox'},
-  //   'Plv': { name: 'Left Ventricle', selected: false, divider: null},
-  //   'Pla': { name: 'Left Atrium', selected: false, divider: null},
-  //   'Prv': { name: 'Right Ventricle', selected: false, divider: null},
-  //   'Pra': { name: 'Right Artrium', selected: false, divider: null},
-  // });
 
-  const [newItems, setNewItems] = useState({'LA': false,'LV': false,'RA': false,'RV': false,'Imv': false ,'Iasp': false ,'Itv': false ,'Iapp': false ,'Qas_prox': false ,'Qap_prox': false ,'Plv': false ,'Pla': false ,'Prv': false ,'Pra': false});
-  const {LA, LV, RA, RV, Imv, Iasp, Itv, Iapp, Qas_prox, Qap_prox, Plv, Pla, Prv, Pra} = newItems
-  // const plotBoxes = useRef([])
-  // const plotPVBoxes = useRef([])
+  const [newItems, setNewItems] = useState({'LA': false,'LV': false,'RA': false,'RV': false,'Imv': false ,'Iasp': false ,'Itv': false ,'Iapp': false ,'AoP': false ,'PAP': false ,'Plv': false ,'Pla': false ,'Prv': false ,'Pra': false});
+  const {LA, LV, RA, RV, Imv, Iasp, Itv, Iapp, AoP, PAP, Plv, Pla, Prv, Pra} = newItems
+
   const [plotBoxes, setPlotBoxes] = useState([]);
   const [plotPVBoxes, setPlotPVBoxes] = useState([]);
 
@@ -152,7 +133,7 @@ const Simulator =() =>{
       const ind = plotBoxes.length
       setPlotBoxes(prev=>[...prev,<TimeSeriesBox initialKeys={initialKeys} remove={removePlotBox(ind,false)}/>])
     }
-    setNewItems({'LA': false,'LV': false,'RA': false,'RV': false,'Imv': false ,'Iasp': false ,'Itv': false ,'Iapp': false ,'Qas_prox': false ,'Qap_prox': false ,'Plv': false ,'Pla': false ,'Prv': false ,'Pra': false})
+    setNewItems({'LA': false,'LV': false,'RA': false,'RV': false,'Imv': false ,'Iasp': false ,'Itv': false ,'Iapp': false ,'AoP': false ,'PAP': false ,'Plv': false ,'Pla': false ,'Prv': false ,'Pra': false})
     setVisible(false)
   }
   console.log( plotBoxes.length)
@@ -168,7 +149,7 @@ const Simulator =() =>{
                 <Grid item xs={3}>
                   <Box display="flex" justifyContent="flex-end" alignItems="center" height={1}>
                     <Box flexGrow={1} display="flex" height={1} justifyContent="flex-start" alignItems="center" ml={4}>
-                      <Link variant="h6" href="/" color ="inherit" underline='none'>CirculateSim</Link>
+                      <Link variant="h6" href="/" color ="inherit" underline='none'>Cardiomator</Link>
                     </Box>
                     <Box width='1px' height={1}>
                       <Divider orientation="vertical" />
@@ -210,7 +191,7 @@ const Simulator =() =>{
                           <Grid container>
                             <Grid item xs={4}>
                               <Box my={2} display='flex' justifyContent="center">
-                                <FormControl disabled = {[Imv, Iasp, Itv, Iapp, Qas_prox, Qap_prox, Plv, Pla, Prv, Pra].some(x=>x)}>
+                                <FormControl disabled = {[Imv, Iasp, Itv, Iapp, AoP, PAP, Plv, Pla, Prv, Pra].some(x=>x)}>
                                   <FormLabel>PV Loop</FormLabel>
                                   <FormGroup>
                                     <FormControlLabel 
@@ -235,7 +216,7 @@ const Simulator =() =>{
                             </Grid>
                             <Grid item xs={4}>
                               <Box my={2} mx={1} display='flex' justifyContent="center">
-                                <FormControl disabled ={[LA, LV, RA, RV, Qas_prox, Qap_prox, Plv, Pla, Prv, Pra].some(x=>x)}>                              
+                                <FormControl disabled ={[LA, LV, RA, RV, AoP, PAP, Plv, Pla, Prv, Pra].some(x=>x)}>                              
                                   <FormLabel>Flow</FormLabel>
                                   <FormGroup>
                                     <FormControlLabel
@@ -264,11 +245,11 @@ const Simulator =() =>{
                                   <FormLabel>Pressure</FormLabel>
                                   <FormGroup>
                                     <FormControlLabel
-                                      control= {<Checkbox color='primary' checked={Qas_prox} onChange={handleChangeItem('Qas_prox')}/>}
+                                      control= {<Checkbox color='primary' checked={AoP} onChange={handleChangeItem('AoP')}/>}
                                       label = 'Aorta'
                                     />
                                     <FormControlLabel
-                                      control= {<Checkbox color='primary' checked={Qap_prox} onChange={handleChangeItem('Qap_prox')}/>}
+                                      control= {<Checkbox color='primary' checked={PAP} onChange={handleChangeItem('PAP')}/>}
                                       label = 'Pulmonary'
                                     />
                                     <FormControlLabel

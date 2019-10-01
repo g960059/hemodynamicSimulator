@@ -307,14 +307,3 @@ export default (props) => {
   //       }
   //   }
   // }, [state.hemodynamicProps]);
-
-  // let Ias = (Qas/Cas-Qvs/Cvs)/Ras
-  // let Ics = (Qas_prox/Cas_prox-Qas/Cas)/Rcs  
-  // let Imv = (Pla-Plv)/Rmv
-  // let Ivp = (Qvp/Cvp-Pla)/Rvp
-  // let Iap = (Qap/Cap-Qvp/Cvp)/Rap
-  // let Icp = (Qap_prox/Cap_prox-Qap/Cap)/Rcp
-  // let Itv = (Pra-Prv)/Rtv
-  // let Ivs = (Qvs/Cvs-Pra)/Rvs
-  // let Iasp =(Plv-Qas_prox/Cas_prox)/Ras_prox
-  // let Iapp =(Prv-Qap_prox/Cap_prox)/Rap_prox

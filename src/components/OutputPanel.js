@@ -67,8 +67,8 @@ export default (props) => {
 
     const logger_length = logger.length
     for(let i=0; i<logger_length; i++){
-      const _AoP = logger[i]['Qas_prox'] / Cas_prox
-      const _PAP = logger[i]['Qap_prox'] / Cap_prox
+      const _AoP = logger[i]['AoP']
+      const _PAP = logger[i]['PAP'] 
       const _CVP = logger[i]['Pra']
       const _Qlv = logger[i]['Qlv']
       const _PCWP = logger[i]['Pla'] 
