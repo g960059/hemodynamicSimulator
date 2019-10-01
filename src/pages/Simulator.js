@@ -229,7 +229,7 @@ const Simulator =() =>{
                                 </FormControl>
                               </Box>
                               <Hidden smUp>
-                                <Box my={2} display='flex' justifyContent="center" pl={2}>
+                                <Box my={2} display='flex' justifyContent="center" pl={1}>
                                   <FormControl disabled ={[LA, LV, RA, RV, AoP, PAP, Plv, Pla, Prv, Pra].some(x=>x)}>                              
                                     <FormLabel>Flow</FormLabel>
                                     <FormGroup>
