@@ -12,7 +12,7 @@ import palette from '../../settings/Palette'
 import PropSettings from '../../settings/PropSettings'
 // import Ledend from './PlotFlowLegend'
 
-const time_range = 4000
+const time_range = 6000
 // const initial_time = 3103.4394
 
 // last = 5200 -> 1200  4000 -> 5200, 3200->4000, 

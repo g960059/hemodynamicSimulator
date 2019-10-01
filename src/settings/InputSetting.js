@@ -132,28 +132,28 @@ const InputSetting = {
     min: 30, max: 150, step: 1
   },
   Ravs:{
-    min: 0, max: 10000, step:1
+    min: 0, max: 100, step:10
   }, 
   Ravr:{
-    min: 0, max: 10000, step:1
+    min: 300, max: 10000, step:100
   }, 
   Rmvr:{
-    min: 0, max: 10000, step:1
+    min: 300, max: 10000, step:100
   }, 
   Rmvs:{
-    min: 0, max: 10000, step:1
+    min: 0, max: 100, step:10
   }, 
   Rpvr:{
-    min: 0, max: 10000, step:1
+    min: 300, max: 10000, step:100
   }, 
   Rpvs:{
-    min: 0, max: 10000, step:1
+    min: 0, max: 100, step:10
   }, 
   Rtvr:{
-    min: 0, max: 10000, step:1
+    min: 300, max: 10000, step:100
   }, 
   Rtvs:{
-    min: 0, max: 10000, step:1
+    min: 0, max: 100, step:10
   },
 }
 

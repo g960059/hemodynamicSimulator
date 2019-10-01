@@ -39,8 +39,10 @@ const InputProps  = (props) => {
           </Grid>
           <Grid item md={7}>
             <Box alignItems="center" display="flex" height={1}>
-              <Slider value = {inputValue} aria-labelledby = {props.name}  onChange={handleChange} onChangeCommitted={dispatchChangeComitted} min={min} max={max} step={step}
-               valueLabelDisplay="auto"/>
+              <Slider value = {inputValue} aria-labelledby = {props.name}  
+              onChange={handleChange} onChangeCommitted={dispatchChangeComitted} 
+              min={min} max={max} step={step} marks={props.marks || []}
+              valueLabelDisplay="auto"/>
             </Box>          
           </Grid>
         </Grid>
@@ -49,7 +51,10 @@ const InputProps  = (props) => {
           <Typography id={props.name}>
             {props.label}
           </Typography>
-            <Slider value = {inputValue} aria-labelledby = {props.name}  onChange={handleChange} onChangeCommitted={dispatchChangeComitted} min={min} max={max} step={step} valueLabelDisplay="auto"/>
+            <Slider value = {inputValue} aria-labelledby = {props.name}  
+            onChange={handleChange} onChangeCommitted={dispatchChangeComitted} 
+            min={min} max={max} step={step} marks={props.marks || []}
+            valueLabelDisplay="auto"/>
       </Box>
     </>
   )

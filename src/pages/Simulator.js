@@ -1,4 +1,4 @@
-import React, {useState,useRef} from 'react';
+import React, {useState,useEffect} from 'react';
 import { makeStyles,createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
 import {Grid, Box, Typography, MenuItem, Checkbox, ListItemText, Menu, AppBar, Toolbar, CssBaseline, Divider,ListSubheader, Link, Button, Fade, FormLabel, FormControl, FormGroup, FormControlLabel} from '@material-ui/core'
 import {Add, Clear} from '@material-ui/icons';
@@ -80,7 +80,14 @@ const useStyles= makeStyles(theme =>({
   addBox: {
     textTransform:'inherit', 
     color:'#bdbdbd', 
+  },
+  titleStyle:{
+    fontFamily: ' Meiryo',
+    fontWeight: 'bold'
   }
+  // secondaryText:{
+  //   color:theme.palette.secondary.main
+  // }
 }))
 
 const store = createStore(reducer)
@@ -136,7 +143,10 @@ const Simulator =() =>{
     setNewItems({'LA': false,'LV': false,'RA': false,'RV': false,'Imv': false ,'Iasp': false ,'Itv': false ,'Iapp': false ,'AoP': false ,'PAP': false ,'Plv': false ,'Pla': false ,'Prv': false ,'Pra': false})
     setVisible(false)
   }
-  console.log( plotBoxes.length)
+  useEffect(() => {
+    setPlotPVBoxes([<PVBox chamber={'LA'} remove={removePlotBox(0,true)}/>,<PVBox chamber={'LV'} remove={removePlotBox(1,true)}/>])
+    setPlotBoxes([<TimeSeriesBox initialKeys={['AoP','Pla','Plv']} remove={removePlotBox(0,false)}/>])
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -148,8 +158,8 @@ const Simulator =() =>{
               <Grid container>
                 <Grid item xs={3}>
                   <Box display="flex" justifyContent="flex-end" alignItems="center" height={1}>
-                    <Box flexGrow={1} display="flex" height={1} justifyContent="flex-start" alignItems="center" ml={4}>
-                      <Link variant="h6" href="/" color ="inherit" underline='none'>Cardiomator</Link>
+                    <Box flexGrow={1} display="flex" height={1} justifyContent="center" alignItems="center" mr={1}>
+                      <Link variant="h6" href="/" color ="inherit" underline='none' className={classes.titleStyle}>Cardiomator</Link>
                     </Box>
                     <Box width='1px' height={1}>
                       <Divider orientation="vertical" />
@@ -187,7 +197,7 @@ const Simulator =() =>{
                         </Button>
                       </Box>
                       <Fade in={visible}>
-                        <Box m={2} borderRadius="borderRadius" border={1} borderColor="grey.400" color='grey.800' >
+                        <Box m={2} borderRadius="borderRadius" border={1} color='grey.800' style={{borderColor:'#e0e0e0'}} >
                           <Grid container>
                             <Grid item xs={4}>
                               <Box my={2} display='flex' justifyContent="center">

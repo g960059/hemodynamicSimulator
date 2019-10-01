@@ -54,12 +54,12 @@ export default {
   Volume: 1500, 
 
   Ravr: 10000,
-  Ravs: 1,
+  Ravs: 0,
   Rmvr: 10000,
-  Rmvs: 1,
+  Rmvs: 0,
   Rpvr: 10000,
-  Rpvs: 1,
+  Rpvs: 0,
   Rtvr: 10000,
-  Rtvs: 1,
+  Rtvs: 0,
 }
 
