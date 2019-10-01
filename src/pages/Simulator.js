@@ -204,7 +204,7 @@ const Simulator =() =>{
                       <Fade in={visible} display={visible? 'block': 'none'}>
                         <Box m={2} borderRadius="borderRadius" border={1} color='grey.800' style={{borderColor:'#e0e0e0'}} >
                           <Grid container>
-                            <Grid item xs={4}>
+                            <Grid item xs={6} sm={4}>
                               <Box my={2} display='flex' justifyContent="center">
                                 <FormControl disabled = {[Imv, Iasp, Itv, Iapp, AoP, PAP, Plv, Pla, Prv, Pra].some(x=>x)}>
                                   <FormLabel>PV Loop</FormLabel>
@@ -228,33 +228,60 @@ const Simulator =() =>{
                                   </FormGroup>
                                 </FormControl>
                               </Box>
+                              <Hidden smUp>
+                                <Box my={2} display='flex' justifyContent="center" pl={2}>
+                                  <FormControl disabled ={[LA, LV, RA, RV, AoP, PAP, Plv, Pla, Prv, Pra].some(x=>x)}>                              
+                                    <FormLabel>Flow</FormLabel>
+                                    <FormGroup>
+                                      <FormControlLabel
+                                        control= {<Checkbox color='primary' checked={Imv} onChange={handleChangeItem('Imv')}/>}
+                                        label = 'Mitral Valve'
+                                      />
+                                      <FormControlLabel
+                                        control= {<Checkbox color='primary' checked={Iasp} onChange={handleChangeItem('Iasp')}/>}
+                                        label = 'Aortic Valve'
+                                      />
+                                      <FormControlLabel
+                                        control= {<Checkbox color='primary' checked={Itv} onChange={handleChangeItem('Itv')}/>}
+                                        label = 'Tricuspid Valve'
+                                      />
+                                      <FormControlLabel
+                                        control= {<Checkbox color='primary' checked={Iapp} onChange={handleChangeItem('Iapp')}/>}
+                                        label = 'Pulmonary Valve'
+                                      />                                        
+                                    </FormGroup>
+                                  </FormControl>
+                                </Box>                                
+                              </Hidden>                              
                             </Grid>
-                            <Grid item xs={4}>
-                              <Box my={2} mx={1} display='flex' justifyContent="center">
-                                <FormControl disabled ={[LA, LV, RA, RV, AoP, PAP, Plv, Pla, Prv, Pra].some(x=>x)}>                              
-                                  <FormLabel>Flow</FormLabel>
-                                  <FormGroup>
-                                    <FormControlLabel
-                                      control= {<Checkbox color='primary' checked={Imv} onChange={handleChangeItem('Imv')}/>}
-                                      label = 'Mitral Valve'
-                                    />
-                                    <FormControlLabel
-                                      control= {<Checkbox color='primary' checked={Iasp} onChange={handleChangeItem('Iasp')}/>}
-                                      label = 'Aortic Valve'
-                                    />
-                                    <FormControlLabel
-                                      control= {<Checkbox color='primary' checked={Itv} onChange={handleChangeItem('Itv')}/>}
-                                      label = 'Tricuspid Valve'
-                                    />
-                                    <FormControlLabel
-                                      control= {<Checkbox color='primary' checked={Iapp} onChange={handleChangeItem('Iapp')}/>}
-                                      label = 'Pulmonary Valve'
-                                    />                                        
-                                  </FormGroup>
-                                </FormControl>
-                              </Box>
-                            </Grid>
-                            <Grid item xs={4}>
+                            <Hidden xsDown>
+                              <Grid item sm={4}>
+                                <Box my={2} mx={1} display='flex' justifyContent="center">
+                                  <FormControl disabled ={[LA, LV, RA, RV, AoP, PAP, Plv, Pla, Prv, Pra].some(x=>x)}>                              
+                                    <FormLabel>Flow</FormLabel>
+                                    <FormGroup>
+                                      <FormControlLabel
+                                        control= {<Checkbox color='primary' checked={Imv} onChange={handleChangeItem('Imv')}/>}
+                                        label = 'Mitral Valve'
+                                      />
+                                      <FormControlLabel
+                                        control= {<Checkbox color='primary' checked={Iasp} onChange={handleChangeItem('Iasp')}/>}
+                                        label = 'Aortic Valve'
+                                      />
+                                      <FormControlLabel
+                                        control= {<Checkbox color='primary' checked={Itv} onChange={handleChangeItem('Itv')}/>}
+                                        label = 'Tricuspid Valve'
+                                      />
+                                      <FormControlLabel
+                                        control= {<Checkbox color='primary' checked={Iapp} onChange={handleChangeItem('Iapp')}/>}
+                                        label = 'Pulmonary Valve'
+                                      />                                        
+                                    </FormGroup>
+                                  </FormControl>
+                                </Box>
+                              </Grid>
+                            </Hidden>
+                            <Grid item xs={6} sm={4}>
                               <Box my={2} display='flex' justifyContent="center">
                                 <FormControl disabled={[LA, LV, RA, RV, Imv, Iasp, Itv, Iapp].some(x=>x)}>
                                   <FormLabel>Pressure</FormLabel>
