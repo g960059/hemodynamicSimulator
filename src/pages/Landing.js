@@ -70,7 +70,7 @@ export default (props) => {
             <Grid container spacing={1}>
               <Grid item xs={12} sm={12} md={5}>
                 <Box m={3}  textAlign="center">
-                  <Typography variant='h2' color='primary'>CirculateSim</Typography>
+                  <Typography variant='h2' color='primary'>Cardiomator</Typography>
                 </Box>
                 <Box m={3} textAlign="center">
                   <Typography variant='h5' color='primary'>
