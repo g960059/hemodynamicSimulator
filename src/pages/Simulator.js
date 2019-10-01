@@ -140,7 +140,7 @@ const Simulator =() =>{
       setPlotPVBoxes([<PVBox chamber={'LA'} remove={removePlotBox(0,true)}/>,<PVBox chamber={'LV'} remove={removePlotBox(1,true)}/>])
       setPlotBoxes([<TimeSeriesBox initialKeys={['AoP','Pla','Plv']} remove={removePlotBox(0,false)}/>])
     }else{
-      setPlotPVBoxes([<PVBox chamber={'LV'} remove={removePlotBox(1,true)}/>])
+      setPlotPVBoxes([<PVBox chamber={'LV'} remove={removePlotBox(0,true)}/>])
       setPlotBoxes([<TimeSeriesBox initialKeys={['AoP','Plv']} remove={removePlotBox(0,false)}/>])      
     }
   }, []);

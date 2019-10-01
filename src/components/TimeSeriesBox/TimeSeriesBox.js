@@ -9,11 +9,25 @@ import PlotFlow from './PlotFlow'
 const useStyles= makeStyles(theme =>({
   fullWidthBox: {
     // maxWidth: `calc(100vw * 7/ 12  - ${theme.spacing(0)}px)`,
-    height: `calc(100vmax * 2/ 12 )`,
     backgroundColor: theme.palette.background.paper,
     boxShadow:'1px 1px 2px 0px rgba(0,0,0,0.08)',
+    [theme.breakpoints.up('sm')]: {
+      height: `calc(100vmax * 2/ 12 )`,
+      paddingTop: theme.spacing(1),
+      marginTop: theme.spacing(2),
+      paddingRight: theme.spacing(1),
+      paddingLeft: theme.spacing(1)
+    },
+    [theme.breakpoints.down('xs')]: {
+      height: `calc(100vmax * 3/ 12 )`,
+      paddingTop: theme.spacing(1),
+      marginTop: theme.spacing(1),
+      paddingRight: theme.spacing(1),
+      paddingLeft: theme.spacing(1)
+    },
   },
 }))
+
 
 export default (props) => {
   const classes = useStyles()
@@ -96,7 +110,7 @@ export default (props) => {
 
   return (
     <Grid item xs={12}>
-      <Box className={classes.fullWidthBox}  px ={2} pt={1} pb={-1} mt={2} position='relative' >
+      <Box className={classes.fullWidthBox} position='relative' >
         <Box position='absolute' left={68} top={-8} display='flex'>
           <Legend items = {legendItems.current} />
           <IconButton  aria-controls='ts-menu' aria-haspopup= {true} onClick={e=>setAnchorEl(e.currentTarget)} style={{zIndex:100}}>
