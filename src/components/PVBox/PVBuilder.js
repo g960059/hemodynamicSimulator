@@ -94,10 +94,10 @@ export default React.memo((props) => {
           }          
         }
         const len = newTrajectory.length
-        if (len >100){
-          history.current[historyIndex.current]=newTrajectory.slice(0,100)
+        if (len > 40){
+          history.current[historyIndex.current]=newTrajectory.slice(0, 40)
           historyIndex.current =  historyIndex.current >=20 ? 0 : historyIndex.current+1
-          return newTrajectory.slice(98)
+          return newTrajectory.slice(38)
         }
         return newTrajectory
       })

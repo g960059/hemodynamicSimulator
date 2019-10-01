@@ -118,7 +118,7 @@ export default (props) => {
           }
           
         }else{
-          if (newDataLength > 100 ){
+          if (newDataLength > 40 ){
             // console.log('trajTypeLength: ',trajTypeLength)
             for(let j=0; j<trajTypeLength; j++){
               // console.log('j; ', j, 'historyIndex: ',historyIndex.current, 'history[historyColumn][j]: ', history.current[historyColumn.current][j])
